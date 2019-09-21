@@ -1,0 +1,76 @@
+Throughput
+  - Def: Rate at which bits transferred between sender/receiver (same units as transmission rate of link)
+  - Instantaneous & average rate
+  - Situations
+    - Simple links: If multiple links, then the average end-to-end throughput is that of the smallest throughput link
+      (bottleneck link) [slide 105]
+    - Shared backbone: [slide 106]
+      - In reality, often the end links are the bottlenecks rather than the backbone. This is because
+        (1) Home connections are very low rates (single Mb/s) while backbone links are hundreds of Gb/s
+        (2) Backbone has different connections coming and going at anytime meaning home connections almost
+            never overwhelm the backbone itself
+
+Layering
+  - Each layer implements a service via internal-layer actions that rely on
+    services provided by layer below
+  - Why?
+    - Modularity (e.g allowing for evolution over time)
+    - Testing
+    - Simplified understanding
+  - Internet Protocol Stack (the 5-layer model will be mostly used in class)
+    - Application
+      - In the OSI model, "presentation" and "session" layers would be absorbed
+        into the application layer
+      - Sends "messages"
+    - Transport
+      - Sends "segments" (messages + headers)
+    - Network
+      - Sends "datagrams"
+      - Routers operate on this level
+    - Link
+      - Sends "frames"
+      - Switches operate on this level
+    - Physical
+  - OSI Model
+    - Application
+      - TLS is implemented at this layer
+    - Presentation
+      - Allow applications to interpret meaning of data (encryption)
+    - Session
+      - Synchronization, checkpointing, recovery of data
+    - Transport
+    - Network
+    - Link
+    - Physical
+  - Encapsulation (slide 118) example
+    - Source
+      - Transport layer adds a header to the application layer's initial message
+      - Networking layer will add another header and turn it into a datagram
+        - Networking layer will now send this datagram to the link layer
+      - Link layer will add another header and turn it into a frame and send to
+        physical layer
+      - The physical layer will send through the link to a switch
+      - This process of adding headers is called encapsulation
+    - Switch will process it, examine the link layer header, and act depending on
+      what it reads (the next place to send it to)
+    - Router will process it
+      - Process it up to the network layer (since it doesn't know what to do at the
+        link layer), removed the link header
+      - Adds a new link header turning it into the datagram and sends to physical layer
+    - Destination
+      - Each layer peels off the header of its header and pass it up the layers
+        (decapsulation)
+      - Now the application received the message
+
+  Note:
+    Only source and destination implement application and transport layers
+      - The implication: The complexity occurs at the edges
+      - Provides huge benefit to packet switching (can have a huge variety of applications as a result)
+        - Contrast to phone networks, where the ends are very simple and the network
+          itself conducts provisioning and the logic
+    Router will implement a network layer
+
+Network Security
+  - Packet sniffing
+    - Broadcast media could be read (if unencrypted)
+  - IP spoofing (packet with false source address)

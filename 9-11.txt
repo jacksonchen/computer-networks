@@ -1,0 +1,47 @@
+Packet switching vs circuit switching
+  - No individually allocated channel, instead packet switching has one
+    channel that everyone shares by sending packets
+  - Pros: Packet switching is more much efficient in resource allocation
+    - Essentially, with 100% reliability, packet switching and circuit switching
+      support the same; but packet switching may support additional users
+      with lower probability of full reliability (statistical multiplexing)
+    - This also allows an individual user to temporarily send more during
+      down periods for others
+  - Cons: Excessive congestion is possible, can lead to packet loss
+    - Circuit switching is better for specific applicable use with predictable usage
+    - Packet switching is better when the use cases are dynamic, and usage is unknown
+
+Network Core
+  - Routing
+  - Forwarding
+
+Packet Switching
+  Packet structure
+    - Sender has destination's IP address in every packet sends
+    - Router when it receives a packet, looks up the destination IP address in
+      a "forwarding table" to figure out where to send it out to
+    - Every router has its own forwarding table, and only stores local links to
+      send it out to, specific for that router
+  Store-and-forward: Entire packet must arrive at router before forwarding
+    - Propagation delay
+
+Delays (Nodal delay)
+  Queueing
+    - When more incoming traffic than bandwidth of the link, then packets will
+      queue up
+    - If the memory (buffer) fills up on the router, then packets are dropped/lost
+    - This is the only type of delay that can vary packet to packet (given all packets are the same size),
+      dependent on the size of the queue
+  Transmission - Putting packet onto link (L/R)
+  Propagation - Packet traveling the link (e.g higher for undersea links)
+    - Between when first bit sent and then received
+  Processing - Putting packet into queue (checking for errors, looking up which
+    link to transmit it out, etc)
+
+Traceroute
+  - Uses TTL (Time to live) to measure the path
+    - TTL is used in case if there is a network loop, where it would eventually
+      throw out the packet rather than permanently circulate through internet
+  - When the router throws back the error message (bc TTL reached 0), it reveals
+    the router that errored out; hence traceroute just sends out the same
+    packet with incremental TTL to trace out the whole path the packet took

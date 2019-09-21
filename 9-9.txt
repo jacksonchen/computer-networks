@@ -1,0 +1,46 @@
+Cloud and servers are the edge of the internet
+  - Us, users, are the core of the Internet
+
+DSL
+  - Central Office serving a region with phone lines
+  - DSL modem in the home that takes digital transmissions from computers and other
+    devices into high frequency analog tones that phone wires transmit
+    - In the central office, the DSLAM takes the analog tones from the modem and
+      converts it back into digital data to send out to the internet
+  - Each house has a dedicated wire
+
+Cable Network
+  - Also have cable modem, very similar to DSL
+  - Headend (instead of central office)
+  - Main difference is all houses in a neighborhood have a shared wire rather
+    than each home having a dedicated wire
+  - Uses HFC (hybrid fiber coax) cable
+
+Ethernet
+  - Good at providing very high speeds over short distances, good for enterprises
+    and institutions
+    - Not good for homes since they are spread far apart
+
+Fiber
+  - Free of electromagnetic interference, able to carry signals across long distances
+
+Wireless & Radio
+  - How to reliably transmit data across unreliable networks?
+
+Internet Structure
+  - Customer - provider relationships with global ISP having connections with
+    access networks
+  - Multiple global ISP's for competition; the global ISP's connect to each
+    other through "peering links"
+  - Internet Exchange Point (IXP) that connect multiple global ISP's (multiple
+    peering links leave IXP's)
+    - Connecting to the exchange point, connects you to everything else connected to the IXP
+  - Also regional networks, if a global ISP is not needed for scope
+  - Content provider network (e.g Google, Netflix)
+    - Gives more control, cheaper operations
+    - Delivers more quickly, faster distribution across the world
+
+Circuit Switching
+  - Each connection between routers, the entire line is reserved to the connection.
+  - Frequency Division Multiplexing or Time Division Multiplexing
+  - Very inefficient because unused allocation is not used by anyone

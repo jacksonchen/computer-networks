@@ -1,0 +1,8 @@
+Internet
+  - Composed of hosts (servers), communication links (e.g fiber), and
+    packet switches (routers/switches that forward packets through network
+    from incoming link to outgoing link)
+  - Hosts are also called end systems because they are at the ends of the network
+  - Nuts and bolts view
+    - Network of networks
+    - Governed by protocols, which are created by Internet Standards (through IETF)

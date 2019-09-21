@@ -1,0 +1,74 @@
+===== Application Layer =====
+
+Principles of Applications
+  - Runs on multiple end systems that communicate over network
+  - No need to write anything for network-core devices
+
+Architecture of apps
+  - Client-server
+    - Server is an always on host with a permanent address
+      - Contains a process that is waiting to be contacted
+    - Client communicates with the server; may be intermittently connected
+      - May have dynamic IP addresses
+      - Clients don't communicate directly with each other
+      - Initiates communication
+  - Peer to peer (P2P)
+    - No reliance on dedicated servers/data center
+    - Peers request service from other peers, provide service in return to other peers
+      - Self scalability -- new peers bring new service capacity & new service demands
+    - Peers intermittently connected and change IP addresses
+    - Effectively, each peer is both a client and a server
+  - Hybrid
+
+Process Communication
+  - Processes on same host use inter-process communication (defined by OS)
+  - Processes between hosts use messages across network to communicate
+  - To receive messages, process needs an identifier
+    - Host has a unique 32-bit IP address, but this isn't enough (host may have multiple processes)
+    - Port number (correspond to process within the host)
+
+Sockets
+  - Processes send/receive messages to/from its socket
+  - Socket effectively acts as a door
+
+App Layer Protocol
+  - Type of messages changes (request/response)
+  - Message syntax (fields in message, how fields are delineated)
+  - Message semantics (meaning of values in fields, e.g in HTTP which resource you're fetching)
+  - Rules (when and how processes send & respond to messages)
+
+  - Types
+    - Open Protocols (defines in RFC's, such as HTTP, SMTP)
+    - Proprietary Protocols (e.g Skype)
+
+e.g: What properties might app need from transport service?
+  - Verification -- reliable delivery
+  - Exactly one? More? Fewer?
+  - Timing
+  - Latency? Throughput
+    - Some apps require minimum amount of throughput to be effective
+    - Other apps make use of whatever throughput they get
+  - Security (Encryption)
+  - Data integrity
+
+Internet Transport Protocol Services
+  - TCP
+    - Provide
+      - Reliable delivery
+      - Connection oriented
+      - In-order message delivery
+      - Flow control (sender won't overwhelm receiver)
+      - Congestion control (throttle sender when network overloaded)
+      - Connection-oriented (setup required between client and server processes)
+    - Does not provide
+      - Latency/throughput guarantees
+      - Encryption
+  - UDP
+    - Provide
+      - Fast delivery
+      - Packet/message abstraction
+    - Does not provide
+      - Latency/throughput guarantee
+      - Encrption
+      - In order guarantee
+      - Reliability
