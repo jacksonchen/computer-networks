@@ -24,6 +24,66 @@
 \author{Jackson Chen (jc4697)} % replace with your name and UNI
 \maketitle
 
+\section*{Bits on Wire}
+  \begin{enumerate}[(a)]
+    \item
+      The largest IP datagram that can be transmitted over Ethernet is 1500 bytes. \footnote{https://en.wikipedia.org/wiki/Maximum\_transmission\_unit\#cite\_note-11}
+
+      OC-1 has a transmission rate of 51.84 Mb/s \footnote{https://en.wikipedia.org/wiki/Optical\_Carrier\_transmission\_rates}
+
+      Thus, the transmission delay is:
+      \[ \frac{0.0015 \text{Mb}}{51.84 \text{Mb/s}} = 0.00002894 \text{s} \]
+
+      Since the speed of light in vacuum is $2.998 * 10^8$ m/s, the distance of the wire is:
+      \[ 0.00002894 \text{s} * 2.998 * 10^8 \text{m/s} * \frac{2}{3} = \boxed{5.78 \text{km}} \]
+    \item
+      The width of a packet on a wire becomes shorter because its transmission
+      delay is shorter, allowing it to be sent out and received by the other
+      end in a shorter period of time.
+  \end{enumerate}
+
+\section*{Circuit Switching and Packet Switching}
+  \begin{enumerate}[(a)]
+    \item
+      Circuit switching provides bandwidth guarantees for resource intensive
+      applications, such as audio/video apps, since it offers dedicated resources.
+    \item
+      Packet switching allows for better variation in use and better resource utilization, both in terms of the types of applications supported, frequency of use amongst users, and number of users.
+    \item
+      Two users
+    \item
+      For a specific user, that probability is $20\%$.
+
+      However, if the question asks what the probability that some user is using
+      the network (say within a $n$ person network), then that would be
+      $1 - 0.8^n$
+    \item
+      The probability of $k$ users using the network simultaneously,
+      and the others not using the network is:
+      \[ 0.2^k * 0.8^{N-k} \]
+
+      The number of $k$ user groups that can be selected from $N$ total users is:
+      \[ {N \choose k}\]
+
+      Thus, the overall probability is:
+      \[ \boxed{0.2^k * 0.8^{N-k} * {N \choose k}} \]
+    \item
+      3 or more users must be using the network simultaneously in order to overwhelm
+      the network. We will solve this problem by solving its inverse.
+
+      Fraction of the time that 0 users are using the network simultaneously:
+      \[ 0.8^{10} = 0.107 \]
+
+      Fraction of the time that 1 user is using the network:
+      \[ 0.2 * 0.8^9 * 10 = 0.268 \]
+
+      Fraction of the time that 2 users are using the network simultaneously:
+      \[ 0.2^2 * 0.8^8 * 45 = 0.302 \]
+
+      Fraction of time that 3+ users are using the network (i.e network overwhelmed):
+      \[ 1 - 0.107 - 0.268 - 0.302 = \boxed{0.323} \]
+  \end{enumerate}
+
 \section*{Message Switching \& Segmentation}
   \begin{enumerate}[(a)]
     \item
@@ -33,8 +93,177 @@
       Furthermore, audio and video streaming allows for some tolerance in packet loss,
       negating much of the downsides of packet switcing.
     \item
+      Because there are $N$ routers between Alice and Bob, this means that there are $N+1$
+      hops that the message must travel through.
 
+      The time it takes for the message to travel to one node before continuing on is:
+      \[ \frac{M}{R} \quad \text{seconds} \]
+
+      Thus the total time for delivery is:
+      \[ \frac{M(N+1)}{R} \quad \text{seconds} \]
     \item
+      Across the trip, there is a transmission delay and a queueing delay that needs to be
+      accounted for.
 
+      Transmission delay: Since each packet is $\frac{M}{k}$ bits, the delay for each node is:
+      \[ \frac{M}{k * R} \]
+
+      Queueing delay: Initially, the first router is congested because all $k$ packets
+      arrive. Due to transmission delay, queueing delay does not impact any of the other
+      routers. The last packet transmitted has a queueing delay of:
+      \[ \frac{M(k-1)}{k * R} \]
+
+      Tracking the final packet, we can figure out what the time of delivery is.
+      It undergoes the queueing delay of the first router, and then undergoes
+      standard transmission delay for all of the routers in the path:
+      \[ \frac{M(k-1)}{k * R} + \frac{N * M}{k * R} = \boxed{\frac{M(N + k - 1)}{k * R} \quad \text{seconds}} \]
+    \item
+      With the addition of the header, the total number of bits transferred will change.
+
+      For the message switching scenario, the total time of delivery is:
+      \[ \frac{(M + h)(N+1)}{R} \quad \text{seconds} \]
+
+      For the packet switching scenario, the total time of delivery is:
+      \[ \frac{(M + kh)(N + k - 1)}{k * R} \quad \text{seconds} \]
+
+      The same end-to-end delay occurs between both mechanisms when
+      \begin{align*}
+        \frac{(M + h)(N+1)}{R} &= \frac{(M + kh)(N + k - 1)}{k * R} \\
+        (M + h)(N + 1) &= \frac{M + kh}{k} (N + k - 1) \\
+        (M + h)(N + 1) &= (\frac{M}{k} + h)(N + k - 1) \\
+        MN + M + h(N + 1) &= \frac{MN}{k} + M - \frac{M}{k} + h(N + k - 1) \\
+        MN - \frac{MN}{k} + \frac{M}{k} &= h(N + k - 1 - N - 1) \\
+        \frac{MN}{k} + \frac{M}{k} &= h(k-2) \\
+        h = \boxed{\frac{M(N+1)}{k(k-2)}}
+      \end{align*}
+
+      With the above condition for h satisfied, both mechanisms have the same
+      end-to-end delay.
+    \item
+      Message switching
+    \item
+      Both mechanisms get less efficient as the number of hops increase, but
+      packet switching takes $\frac{M}{k * R}$ seconds longer per additional hop
+      while message switching takes $\frac{M}{R}$ seconds longer, making
+      packet switching the far more efficiently scalable mechanism.
+    \item
+      The transmission delay per node during packet switching is much lower,
+      by a factor of $\frac{1}{k}$ (see part f). This is because in packet
+      switching, the message is broken up into much smaller packets to be
+      sent out, making the router wait less time to receive the complete datagram.
+    \item
+      The transmission delay for each 0.1MB packet is $\frac{1}{20}$ seconds.
+
+      The amount of time it takes for a packet to transfer succesfully looks like
+      the following:
+      \begin{align*}
+        &  \left( \frac{1}{10} \right)^0 * \frac{9}{10} * \frac{1}{20} && \text{Success on first try} \\
+        +& \left( \frac{1}{10} \right)^1 * \frac{9}{10} * \frac{2}{20} && \text{Success on second try} \\
+        +& \left( \frac{1}{10} \right)^2 * \frac{9}{10} * \frac{3}{20} && \text{Success on third try} \\
+        +& ...
+      \end{align*}
+
+      This can be modeled as
+      \[ \sum_{i=0}^{\infty} \left( \frac{1}{10} \right)^i * \frac{9}{10} * \frac{i+1}{20}
+        = \frac{9}{10} \sum_{i=0}^{\infty} \left( \frac{1}{10} \right)^i * \frac{i+1}{20}
+      \]
+
+      Since there are a total of 10 packets that need to be transferred, the
+      expected time for the file to be transferred is:
+      \[ 10 * \frac{9}{10} \sum_{i=0}^{\infty} \left( \frac{1}{10} \right)^i * \frac{i+1}{20} = \boxed{9 \sum_{i=0}^{\infty} \left( \frac{1}{10} \right)^i * \frac{i+1}{20} \quad \text{seconds}} \]
+    \item
+      No
+    \item
+      The ideal delay is $1/2$ seconds. This number will be used as the baseline for
+      the following parts.
+      \begin{enumerate}[(i)]
+        \item
+          The threshold time would be: $0.5 * 1.2 = 0.6$ seconds.
+
+          To meet that threshold, the file must succeed on its first try,
+          hence $\boxed{0.9}$
+        \item
+          The threshold time would be: $0.5 * 2 = 1$ second.
+
+          To exceed (or equal) the threshold, the file must fail at least once,
+          hence $\boxed{0.1}$
+        \item
+          The threshold time would be: $0.5 * 1.2 = 0.6$ seconds.
+
+          To meet that threshold, there must be at most two packet failures (note
+          that the combination is added because all of the packets are
+          indistinguishable, and thus failures could occur with any set of them)
+          \begin{align*}
+            & 0.9^{10} + 0.9^9 * 0.1 * {10 \choose 1} + 0.9^8 * (0.1)^2 * {10  \choose 2} \\
+            =& 0.9^{10} + 0.9^9 * 0.1 * 10 + 0.9^8 * (0.1)^2 * 45 \\
+            =& \boxed{0.93}
+          \end{align*}
+        \item
+          The threshold time would be: $0.5 * 2 = 1$ second.
+
+          To exceed (or equal) the threshold, there must be at least 10 packet failures.
+          Since the first retransmission is always successful, then this means all
+          of the packets must fail: $\boxed{0.1^{10}}$
+      \end{enumerate}
+    \item
+      Segmentation significantly improves the performance of file transmission. Part (j)
+      showed that segmentation not only increased the likelihood of file transfers
+      meeting the $120\%$ threshold, but made it nearly impossible for it to
+      exceed the $200\%$ threshold.
+
+      The specific mechanism that achieves this is the lower transmission delay
+      achieved when segmenting the file into packets. This makes any failure in
+      the segmented case much less costly (for nonsegmented case, it could not
+      tolerate any failures to reach the $120\%$ threshold).
+    \item
+      It would make the influence of segmentation much more significant in a positive
+      way. By segmentating a large file into many small packets, each packet individually
+      has a very low corruption rate, making it much more likely that the file would
+      be transferred in its entirety without any changes. Meanwhile, sending the entire file at once would likely have a high corruption rate. Thus segmentation would have a
+      higher influence with corruption rates taken into consideration.
   \end{enumerate}
+
+\section*{Protocol Layers and Service Models}
+  \begin{enumerate}[(a)]
+    \item
+      A layered internet architecture is important for two reasons:
+
+      (1) Modularization makes maintenance, updating, and reuse of a system possible, especially given how
+      distributed it is and vital its continuing uptime is.
+
+      (2) It allows for identification and for relationship between the complex
+      system's components.
+    \item
+      Layers may duplicate functionality with each other, increasing complexity
+      and redundancy.
+    \item
+      The Internet protocol provides that all these services, if needed, must be
+      implemented in the application layer.
+    \item
+      The host machine uses the application, transport, network, link, and physical layers.
+    \item
+      The router uses the network, link, and physical layers.
+    \item
+      The transport layer protocol (TCP vs UDP) does not affect the behavior of a switch,
+      since a switch only operates at a link and physical level.
+    \item
+      A data segment is at the transport level, which means it contains information
+      about the transport and application levels. With this in mind, here are the
+      answers for the different parts:
+      \begin{enumerate}[(i)]
+        \item
+          Determinable, since HTTP is in the application layer, which is encapsulated
+          within a data segment.
+        \item
+          Determinable, since TCP is in transport layer, which is encapsulated
+          within a data segment.
+        \item
+          Unclear, since IP is in the network layer, which is below the transport
+          layer and thus out of scope for a data segment.
+        \item
+          Unclear, since Ethernet is in the physical layer, which is below the transport
+          layer and thus out of scope for a data segment.
+      \end{enumerate}
+  \end{enumerate}
+
 \end{document}
