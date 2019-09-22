@@ -1,6 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1569174203 "hw1.tex" "hw1.pdf" "hw1" 1569174204
-  "/dev/null" 1569174184 0 d41d8cd98f00b204e9800998ecf8427e ""
+["pdflatex"] 1569177091 "hw1.tex" "hw1.pdf" "hw1" 1569177092
+  "/dev/null" 1569177081 0 d41d8cd98f00b204e9800998ecf8427e ""
   "/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/tfm/jknappen/ec/ecbx1095.tfm" 1136768653 3584 21b378cca2e40816b0e6d74a4dc98f04 ""
@@ -188,9 +188,9 @@
   "/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1557342064 3277517 23507ed665b4dd9046f0f2a94bbef2be ""
   "/usr/local/texlive/2019/texmf-var/web2c/pdftex/pdflatex.fmt" 1557342086 4259635 562fc36ec496993777a6c428d8bfb811 ""
   "/usr/local/texlive/2019/texmf.cnf" 1557341546 577 d150fef99ac436ad1156e86b0892f6ef ""
-  "hw1.aux" 1569174204 8 a94a2480d3289e625eea47cd1b285758 "pdflatex"
-  "hw1.tex" 1569174203 12346 81ed57fbd049ef6b1ea0fb397f232b87 ""
+  "hw1.aux" 1569177092 8 a94a2480d3289e625eea47cd1b285758 "pdflatex"
+  "hw1.tex" 1569177091 12358 980d6b4c04d42fdf3744b11440558e62 ""
   (generated)
+  "hw1.aux"
   "hw1.log"
   "hw1.pdf"
-  "hw1.aux"

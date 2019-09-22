@@ -29,13 +29,13 @@
     \item
       The largest IP datagram that can be transmitted over Ethernet is 1500 bytes. \footnote{https://en.wikipedia.org/wiki/Maximum\_transmission\_unit\#cite\_note-11}
 
-      OC-1 has a transmission rate of 51.84 Mb/s \footnote{https://en.wikipedia.org/wiki/Optical\_Carrier\_transmission\_rates}
+      OC-1 has a transmission rate of 51.84 Mbit/s $= 6.48$ Mb/s \footnote{https://en.wikipedia.org/wiki/Optical\_Carrier\_transmission\_rates}
 
       Thus, the transmission delay is:
-      \[ \frac{0.0015 \text{Mb}}{51.84 \text{Mb/s}} = 0.00002894 \text{s} \]
+      \[ \frac{0.0015 \text{Mb}}{6.48 \text{Mb/s}} = 0.000231 \text{s} \]
 
       Since the speed of light in vacuum is $2.998 * 10^8$ m/s, the distance of the wire is:
-      \[ 0.00002894 \text{s} * 2.998 * 10^8 \text{m/s} * \frac{2}{3} = \boxed{5.78 \text{km}} \]
+      \[ 0.000231 \text{s} * 2.998 * 10^8 \text{m/s} * \frac{2}{3} = \boxed{46.2 \text{km}} \]
     \item
       The width of a packet on a wire becomes shorter because its transmission
       delay is shorter, allowing it to be sent out and received by the other
@@ -134,7 +134,7 @@
         MN + M + h(N + 1) &= \frac{MN}{k} + M - \frac{M}{k} + h(N + k - 1) \\
         MN - \frac{MN}{k} + \frac{M}{k} &= h(N + k - 1 - N - 1) \\
         \frac{MN(k-1)}{k} + \frac{M}{k} &= h(k-2) \\
-        h = \boxed{\frac{M(N(k-1)+1)}{k(k-2)}}
+        h &= \boxed{\frac{M(N(k-1)+1)}{k(k-2)}}
       \end{align*}
 
       With the above condition for h satisfied, both mechanisms have the same
