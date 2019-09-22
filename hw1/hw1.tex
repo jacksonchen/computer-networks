@@ -115,8 +115,9 @@
 
       Tracking the final packet, we can figure out what the time of delivery is.
       It undergoes the queueing delay of the first router, and then undergoes
-      standard transmission delay for all of the routers in the path:
-      \[ \frac{M(k-1)}{k * R} + \frac{N * M}{k * R} = \boxed{\frac{M(N + k - 1)}{k * R} \quad \text{seconds}} \]
+      standard transmission delay for all of the routers in the path (incl. the link
+      from the host machine):
+      \[ \frac{M(k-1)}{k * R} + \frac{(N+1) * M}{k * R} = \boxed{\frac{M(N + k)}{k * R} \quad \text{seconds}} \]
     \item
       With the addition of the header, the total number of bits transferred will change.
 
