@@ -1,0 +1,49 @@
+Internet
+  - TCP and UDP have no encryption, sending passwords would just send in plaintext
+  - SSL/TLS encrypts a TCP connection
+    - SSL is deprecated because some of the intellectual property was tied to Netscape
+    - Client/server set up TCP then set up TLS on top of that
+  - Internet currently provides no guarantees for timing and throughput
+    - There are some ways/workarounds to get good performance:
+    - Adaptive protocols
+      (adaptive bitrates for varying conditions, congestion control)
+    - Overprovision (put more servers in more locations since you're effectively guaranteeing performance)
+
+HTTP
+  - Web page consists of objects, each of which is addressable by URL (hostname + pathname)
+  - Browser implements client side of HTTP protocol
+  - HTTPS requests are running on a HTTPS socket on top of TLS
+
+  - Uses TCP
+  - Is stateless (protocol doesn't enforce server maintaining info about past client requests)
+  - Process
+    - Client creates a socket, OS sends TCP connection to server (usually port 80)
+    - Server accepts TCP connection from client
+    - HTTP messages exchanges between browser and server
+    - TCP connection closed
+  - Non-persistent
+    - This means retrieving an HTML page with 10 image objects results in 11 different
+      TCP connections being created (since they get closed after the result gets sent back)
+    - These connections can happen in parallel, even to the same server
+    - TCP allows for multiple connections to be spawned from the same port
+      (new socket gets spawned for each connection set up so communication isn't garbled)
+    - Response time = 2 round trip times (RTT) + file transmission time
+    - Negatives
+      - OS overhead for each TCP connection, requires 2 RTT per object
+  - Persistent
+    - Server leaves connection open after sending response
+    - Client doesn't have to wait for the full response before sending more requests
+      (this is called pipelining)
+    - Need just one RTT for all the reference objects
+    - Most interactions on the Web today use persistent HTTP + pipelining
+  - HTTP 2 is the most modern version
+    - Push promise (a promise that the object will be sent)
+  - Request message is ASCII format
+
+Cookies "keeping state"
+  - Counteract's HTTP statelessness
+  - First contact: In the header line of the response message, stored in browser
+  - Cookie will be sent in any future requests to that server
+
+Cache
+  - Cache hit rate -- how much of the requests can be satisfied by the cache

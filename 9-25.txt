@@ -1,0 +1,58 @@
+Caching
+  - Currently, content delivery network is the most commonly used cache
+  - Get request
+    - Header request has a "if-modified-since" to check if cache is up to date
+    - If satisfied = no object transmission delay and lower link utilization
+
+Electronic mail
+  - Messages stored on mail servers
+  - Uses SMTP to communicate between user agents and mail servers
+    - Sender and receiver operate in an asynchronous manner
+    - The addition of a mail server allows for the asynchronity
+  - Mail server
+    - Newly outgoing mail gets added to a queue (message queue)
+      - This mail gets sent to the recipient's mail server
+    - Incoming mail to mail server gets stored in the user's inbox
+  - SMTP
+    - Uses TCP either for sending from client to server (mail server) or server to recipient
+    - Runs on port 25
+    - Direct transfer in three phases:
+      - Handshake
+      - Transfer of Messages
+      - Closure
+    - Messages must be in 7-bit ASCII -- even if user includes special font etc,
+      it must be converted to ASCII before being sent out
+    - Persistent connection
+    - Push based protocol (compare this to HTTP which is pull based with each
+      object as a request-response transaction)
+  - Slide 70
+    - When you check the mail via a user agent (step 6), what protocol do you use?
+      - SMTP isn't actually a protocol for checking mail
+      - HTTP can be used, esp since the mail server has a well known DNS
+        (Gmail, Yahoo Mail, etc)
+      - POP, IMAP can also be used
+        - IMAP more features including manipulation of stored messages on server
+    - Also note that sending mail to the mail server (step 2) could also use HTTP to send the message
+      (e.g Gmail)
+    - Conclusion: Step 2 COULD be SMTP, but Step 6 can NOT be SMTP
+  - RFC 822 standard for mail message format
+
+POP3 vs IMAP
+  - POP3
+    - Authorization phase (client sends user and password)
+    - Transaction phase (retrieve messages, delete, quit)
+  - POP clients cannot re-read email if client is changed
+  - POP: Stateless across sessions
+  - IMAP keeps user state across sessions (names of folders and mappings
+    between message IDs and folder name)
+
+At the protocol level, there's nothing to prevent spoofing (of sender)
+  - Common way to prevent this is for server itself to check
+
+========== Domain Name System (DNS)
+
+Why DNS?
+  - IP addresses change, but the audience may not necessarily know or care
+
+DNS
+  - Implemented at the application layer protocol

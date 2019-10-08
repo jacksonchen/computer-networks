@@ -1,0 +1,43 @@
+Content distribution networks and video streaming
+  - Video consists of most of the Internet bandwidth
+  - Heterogenity of users (users with different bandwidth capabilities)
+  - Solution: Application-level infrastructure
+
+  - How to send video
+    - Since video is a sequence of frames (images), could use redundancy between
+      images to decrease # bits used to encode image
+      - i.e send only differences between frames
+    - VBR: Variable bitrate (to capture differences, sometimes very little difference
+      other times drastic changes between frames)
+    - DASH
+      - Server divides video files in to chunks, encoded at different rates,
+        and provides manifest file for URLs for different chunks
+      - Client would measure server-to-client bandwidth, and requests chunk at a time
+        at the maximum coding rate sustainable
+        - Flexible, since client can choose different coding rates at different points in time
+        - Client holds "intelligence" for when and what encoding rate to request
+    - CDN
+      - Store multiple copies of video chunks at multiple geographically distributed sites,
+        or places with high available bandwidth
+      - Enter deep CDN: Push these CDN servers into many access networks (close to users)
+      - Bring home CDN: Smaller number of CDN's, but put in more populated interconnection
+        points with lots of users (POP - Point of Presence)
+
+      - OTT
+        - When user requests video, they sent to Netflix central servers, which send back
+          a manifest of the location of the closest server with that video
+          - The user then directly streams from that server
+      - How to direct client to particular CDN server? (not in book)
+        - Customized hostnames
+          - Pro: Straightforward to get exact mapping you want
+          - Cons: Not relevant on first page
+        - DNS redirection
+          - Authoritative DNS resolver will give IP address that it wants you to go to
+          - Authoritative resolver will communicate with client's LDNS and give the client
+            the IP of the closest server
+          - DNS pitfall: Only bases off location of LDNS, which can serve clients in
+            very different locations
+        - Anycast
+          - Very simple, relies on Internet routing
+          - This is also a con, since much less precise control
+            - Server switches will break TCP connections

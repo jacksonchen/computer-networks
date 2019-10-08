@@ -1,0 +1,63 @@
+DNS
+  - LDNS - Local DNS server (aka recursive resolver)
+  - Distributed database over many name servers
+    - Hierarchical
+      - Root DNS Servers
+        -> com/org/edu DNS servers (TLD server -- Top Level Domain)
+          -> yahoo/amazon/pbs/etc servers (Authoritative server)
+            - The authoritative server is the "authority" over the data that's on it
+            - If authoritative server changes, root doesn't need to know about that
+              only the TLD server would need to know
+    - Root servers
+      - IP address of these servers don't change at all
+      - Their IP's are stored in local ISP's resolvers
+      - Some are operated by government, some by orgs, edus, and for profit companies
+    - TLD Servers
+      - VeriSign maintains servers for .com TLD
+      - Educause for .edu TLD
+    - Authoritative DNS
+      - Organizations own their own DNS server mapping horganizational hostname to IP addresses
+      - Authoritative resolvers needed to redirect mail to mail servers
+      - Can also be maintained by a service provider rather than the organization
+      - Can have multiple levels depending on complexity (multiple authoritative levels
+        where the top would return IP address to the next level authoritative server)
+    - Local DNS name server
+      - Does not belong to hierarchy
+      - ISP's have one
+  - DNS is Application layer protocol to resolve names
+  - Iterated query to resolve the IP (hits root, then hits TLD ip, then authoritative)
+  - Caching
+    - Once any name server learns mapping, it caches the mapping with an expiration date
+    - If name host changes IP address, may not be known Internet-wide until all TTLs expires
+  - DNS Records
+    - A (name -> IPv4 address)
+    - AAAA (name -> IPv6 address)
+    - NS (name -> authoritative name server that contains this domain)
+    - CNAME (name [could be alias] -> canonical name [the real name])
+    - MX (name -> name of mail-server associated with name)
+
+    - UPDATING RECORDS
+      - Register with DNS registrar (name, two authoritative name servers, IP, A)
+      - Registrar creates authoritative server type A record and MX record
+  - DNS Protocol
+    - Query and replies have the same message Format
+      - ID number
+      - Flags
+
+  - Attacks
+    - DDOS (attacking root and TLD servers)
+    - Redirect attacks
+      - DNS poisoning (send bogus replies to DNS server, which gets cached)
+
+====== P2P Architecture
+
+P2P
+  - No always on server (in the most pure P2P architecture -- in reality there is some small infrastructure of always on servers)
+  - Arbitrary end systems directly communicate
+  - Peers are intermittently connected and change IP addresses
+  - File distribution
+    - In client-server model: Server will send a copy of file to each peer who wants it
+  - BitTorrent
+    - Tracker will note a person's neighbors
+    - Running into churn (once someone is done getting the file they leave)
+    - Read the slide for tit for tat
