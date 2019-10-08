@@ -71,6 +71,7 @@ while server_connected:
     try:
         keep_alive = handle_from_client(client_connection)
         if (not keep_alive):
+            client_connection.close()
             break
     finally:
         client_connection.close()
