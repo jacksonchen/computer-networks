@@ -230,7 +230,7 @@
       a seamless streaming experience as a user's bandwidth fluctuates
     \item
       Rather than directly implementing TCP, QUIC reduces the time it takes
-      to set up a connection (by reducing the RTT), and also doesn't
+      to set up a connection (by reducing the number of RTT's), and also doesn't
       block multiple resources if one resource loses packets along the way.
       \footnote{https\://en.wikipedia.org/wiki/QUIC\#QUIC}
     \item
@@ -328,8 +328,8 @@
           a connection for every client that is trying to resolve a domain name
     \item Smaller packet header overhead with UDP segments
     \item The application protocol does not use conditional requests. It uses TTL
-          as an expiration date instead. This is better because it saves the amount
-          of requests that are made to upper level servers.
+          as an expiration date for the cache instead. This is better because it
+          saves the amount of requests that are made to upper level servers.
     \item Local DNS Server -> Root DNS -> .fr TLD DNS server -> lemonde.fr Authoritative DNS server
     \item Yes -- a deployment could exist where the authoritative DNS server is closer
           to the TLD DNS server, which is closer to the root DNS server than
