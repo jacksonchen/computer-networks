@@ -1,0 +1,54 @@
+Transport Layer and UDP
+  - Does not support delay guarantees or bandwidth guarantees
+  - Provides host to host delivery service (IP to IP)
+    - Sender multiplexer: Handle data from multiple sockets and add transport header
+      - Sockets allow multiplexing to happen
+    - Demultiplexing at receiver: Use header info to deliver received segments to
+      correct socket
+  - UDP socket determined just with destination IP and port #
+    - Why no source? -> No connection needs to be established, just sending
+      packets from source to destination without needing feedback
+  - TCP tradeoffs
+    - Pros: Allows for isolated connection
+    - Cons: Twice as long (requires establishing an initial connection)
+  - TCP Socket
+    - Identified by 4-tuple (source IP & port, dest IP & port)
+    - When a bunch of packets come in, OS will automatically create
+      socket based on the four-tuple, so it's fine if the packets have same dest IP
+      and port
+      - Note, packets sharing the same server port will still all use the same port
+        because the four-tuple is able to distinguish (the source will be different)
+      - Demultiplexing uses the entire 4-tuple
+      - If it's all connecting to the same application, OS will create a new socket
+        connecting to a new thread of that application
+  - UDP
+    - Bare bones transport protocol
+    - Takes message from application layer, adds source dest and port for demultiplexing
+      purposes (note, it still has the source information)
+    - Each UDP segment is handled independently of others
+    - UDP use cases
+      - Lots of video streaming
+      - DNS
+      - SNMP (Simple Network Management Protocol)
+    - Reliability can be added over UDP via application layer
+    - No connection establishment needed, saving time and overhead
+    - Checksum
+      - Allows receivers to check for errors in transmitted segment
+      - Checksum is not a perfect solution, just bc message matches check sum does
+        not exactly mean there is no error
+  - Principles of reliable data transfer
+    - In order transfer
+      - Thus can't guarantee bandwidth (can't send the 100th packet until 99 before
+        are delivered)
+    - Data integrity
+      - No data loss
+      - No corruption
+
+    - How do to this over an unreliable channel (the internet)?
+      - Define ARQ Protocol - Automatic Repeat Request
+        - Use checksums to detect errors
+        - Receiver needs to provide feedback (ACK - acknowledgement, NAK - negative acknowledgement)
+        - Retransmission - When sender receives NAK, they retransmit packet
+      - rdt2.0: Sender waits for application to call rdt_send to trigger the process
+        - Flaw: What is ACK or NACK gets corrupted
+      - 
