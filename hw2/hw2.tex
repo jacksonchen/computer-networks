@@ -110,7 +110,7 @@
       TCP connections to be established sequentially.
 
       The RTT will be:
-      \[ \frac{3 * 10^7}{3 * 10^8} = 0.1 \text{ seconds} \]
+      \[ 2 * \frac{3 * 10^7}{3 * 10^8} = 0.2 \text{ seconds} \]
 
       To establish a single TCP connection, three control messages are exchanged
       between the client and server. Since the control messages are 2000 bits,
@@ -120,21 +120,21 @@
       To send one 100 kBit object back to the client, it will take $0.1$ seconds.
 
       Thus to establish one TCP connection and send one object, it will take:
-      \[ 2 * \text{RTT} + 0.006 + 0.1 = 0.306 \text{ seconds} \]
+      \[ 2 * \text{RTT} + 0.006 + 0.1 = 0.506 \text{ seconds} \]
 
       Thus, in order to send all 11 objects from the server:
-      \[ 11 * 0.306 = \boxed{3.366 \text{ seconds}} \]
+      \[ 11 * 0.506 = \boxed{5.566 \text{ seconds}} \]
     \item
       A TCP connection needs to be initiated to retrieve the the first downloaded
       object, and then the client has access to the references to the other ten
       objects, and can thus establish 10 connections in parallel.
 
-      The RTT is still $0.1$ seconds, and the time to transmit the control messages
+      The RTT is still $0.2$ seconds, and the time to transmit the control messages
       per TCP connection is $0.006$ seconds.
 
       To transmit the initial 100 kBit object in the first TCP connection, it will take
       $0.1$ seconds. Thus, the time to establish the first TCP connection is:
-      \[ 2 * \text{RTT} + 0.006 + 0.1 = 0.306 \text{ seconds} \]
+      \[ 2 * \text{RTT} + 0.006 + 0.1 = 0.506 \text{ seconds} \]
 
       To send the remaining ten 100-kBit objects in parallel, it would be equivalent
       to sending 1 million bits through the link at once, and thus take $1$ second
@@ -148,32 +148,32 @@
 
       The time to establish parallel TCP connections and transmit the next ten objects
       is:
-      \[ 2 * \text{RTT} + 0.06 + 1 = 1.26 \text{ seconds} \]
+      \[ 2 * \text{RTT} + 0.06 + 1 = 1.46 \text{ seconds} \]
 
       The time to retrieve all 11 objects is just:
-      \[ 0.306 + 1.26 = \boxed{1.566 \text{ seconds}} \]
+      \[ 0.506 + 1.46 = \boxed{1.966 \text{ seconds}} \]
     \item
       When using a persistent HTTP, the propagation delay will be $2 * \text{RTT}$
       to retrieve the first object (since it needs to set up the TCP connection),
       but then drop to $1 \text{RTT}$ for the remaining file transmissions.
 
       From part (a), establishing and transmitting the first object takes
-      $0.306$ seconds.
+      $0.506$ seconds.
 
       Transmitting the remaining objects will individually take:
-      \[ \text{RTT} + 0.002 + 0.1 = 0.202 \text{ seconds} \]
+      \[ \text{RTT} + 0.002 + 0.1 = 0.302 \text{ seconds} \]
       Note the $0.002$ instead of $0.006$, this is because only one control message
       needs to be sent from the client to the server.
 
       Thus, the total time it takes to get 11 objects using persistent HTTP is:
-      \[ 0.306 + 10 * 0.202 = \boxed{2.326 \text{ seconds}} \]
+      \[ 0.506 + 10 * 0.302 = \boxed{3.526 \text{ seconds}} \]
     \item
-      The gains are decent (but not by orders of magnitude), as it shaved off $1.04$
-      seconds, or around 30 percent of the total time.
+      The gains are decent (but not by orders of magnitude), as it shaved off $2.04$
+      seconds, or around 36.7 percent of the total time.
     \item
-      If the link length is $3 * 10^{10}$ meters, then the RTT would be 100 seconds,
+      If the link length is $3 * 10^{10}$ meters, then the RTT would be 200 seconds,
       which would make using persistent HTTP significant more efficient by orders of
-      magnitude as it cuts down on one RTT, or 100 seconds, for every object retrieved.
+      magnitude as it cuts down on one RTT, or 200 seconds, for every object retrieved.
     \item
       When Jeff first visits Amazon, Amazon's server creates a unique ID for Jeff,
       stores it in a database, and then sets a cookie in Jeff's client to store

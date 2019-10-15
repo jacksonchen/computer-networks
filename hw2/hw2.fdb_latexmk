@@ -1,6 +1,6 @@
 # Fdb version 3
-["pdflatex"] 1571028527 "hw2.tex" "hw2.pdf" "hw2" 1571028530
-  "/dev/null" 1571028530 0 d41d8cd98f00b204e9800998ecf8427e ""
+["pdflatex"] 1571099480 "hw2.tex" "hw2.pdf" "hw2" 1571099484
+  "/dev/null" 1571099484 0 d41d8cd98f00b204e9800998ecf8427e ""
   "/usr/local/texlive/2019/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1136849721 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/map/fontname/texfonts.map" 1511824771 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/local/texlive/2019/texmf-dist/fonts/tfm/jknappen/ec/ecbx1440.tfm" 1136768653 3584 13049b61b922a28b158a38aeff75ee9b ""
@@ -186,8 +186,8 @@
   "/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1557342064 3277517 23507ed665b4dd9046f0f2a94bbef2be ""
   "/usr/local/texlive/2019/texmf-var/web2c/pdftex/pdflatex.fmt" 1557342086 4259635 562fc36ec496993777a6c428d8bfb811 ""
   "/usr/local/texlive/2019/texmf.cnf" 1557341546 577 d150fef99ac436ad1156e86b0892f6ef ""
-  "hw2.aux" 1571028530 8 a94a2480d3289e625eea47cd1b285758 "pdflatex"
-  "hw2.tex" 1571028527 16031 5461515a0d7e4731e167e7e0ca9f602a ""
+  "hw2.aux" 1571099484 8 a94a2480d3289e625eea47cd1b285758 "pdflatex"
+  "hw2.tex" 1571099480 16037 97476f49dc6dcfe2536b2d701f9dcfb7 ""
   "img/1.png" 1571022685 379606 73206db8275b5a5f42549996ed2d424a ""
   "img/10.png" 1571025007 62460 28e27bbd66573a96c061067f7ca73112 ""
   "img/11.png" 1571025128 605067 1970647393b438ceb9d9eae2f106d872 ""
@@ -202,6 +202,6 @@
   "img/8.png" 1571024467 591303 1a70da6181718683d350e06b9593aba6 ""
   "img/9.png" 1571024984 40962 7c5b95efa1173ac8142a39cfb65ba7f1 ""
   (generated)
-  "hw2.aux"
   "hw2.pdf"
   "hw2.log"
+  "hw2.aux"
