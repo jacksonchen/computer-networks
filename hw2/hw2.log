@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  14 OCT 2019 20:31
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019) (preloaded format=pdflatex 2019.5.8)  14 OCT 2019 23:08
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -925,13 +925,13 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) [1
 
 {/usr/local/texlive/2019/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2] [3]
-LaTeX Font Info:    Try loading font information for T1+cmtt on input line 208.
+LaTeX Font Info:    Try loading font information for T1+cmtt on input line 214.
 
 
 (/usr/local/texlive/2019/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
-Overfull \hbox (5.61168pt too wide) in paragraph at lines 207--210
+Overfull \hbox (5.61168pt too wide) in paragraph at lines 213--216
 []\T1/cmr/m/n/10.95 The browser is re-quest-ing a per-sis-tent con-nec-tion be-
 cause of the field: \T1/cmtt/m/n/10.95 Connection: Keep-Alive 
  []
@@ -940,78 +940,77 @@ cause of the field: \T1/cmtt/m/n/10.95 Connection: Keep-Alive
 <./img/1.png, id=30, 606.265pt x 404.51125pt>
 File: ./img/1.png Graphic file (type png)
 <use ./img/1.png>
-Package pdftex.def Info: ./img/1.png  used on input line 269.
+Package pdftex.def Info: ./img/1.png  used on input line 275.
 (pdftex.def)             Requested size: 426.79134pt x 284.76692pt.
 <./img/2.png, id=32, 770.88pt x 134.5025pt>
 File: ./img/2.png Graphic file (type png)
 <use ./img/2.png>
-Package pdftex.def Info: ./img/2.png  used on input line 272.
+Package pdftex.def Info: ./img/2.png  used on input line 278.
 (pdftex.def)             Requested size: 426.79134pt x 74.46504pt.
-<./img/3.png, id=33, 498.86375pt x 144.54pt>
+ [5 <./img/1.png>]
+<./img/3.png, id=37, 498.86375pt x 144.54pt>
 File: ./img/3.png Graphic file (type png)
 <use ./img/3.png>
-Package pdftex.def Info: ./img/3.png  used on input line 275.
+Package pdftex.def Info: ./img/3.png  used on input line 281.
 (pdftex.def)             Requested size: 426.79134pt x 123.66235pt.
-<./img/4.png, id=34, 532.99126pt x 120.45pt>
+<./img/4.png, id=38, 532.99126pt x 120.45pt>
 File: ./img/4.png Graphic file (type png)
 <use ./img/4.png>
-Package pdftex.def Info: ./img/4.png  used on input line 278.
+Package pdftex.def Info: ./img/4.png  used on input line 284.
 (pdftex.def)             Requested size: 426.79134pt x 96.45201pt.
- [5 <./img/1.png> <./img/2.png> <./img/3.png>]
-<./img/5.png, id=41, 680.5425pt x 119.44624pt>
+<./img/5.png, id=39, 680.5425pt x 119.44624pt>
 File: ./img/5.png Graphic file (type png)
 <use ./img/5.png>
-Package pdftex.def Info: ./img/5.png  used on input line 282.
+Package pdftex.def Info: ./img/5.png  used on input line 288.
 (pdftex.def)             Requested size: 426.79134pt x 74.90887pt.
-<./img/6.png, id=42, 592.2125pt x 115.43124pt>
+<./img/6.png, id=40, 592.2125pt x 115.43124pt>
 File: ./img/6.png Graphic file (type png)
 <use ./img/6.png>
-Package pdftex.def Info: ./img/6.png  used on input line 286.
+Package pdftex.def Info: ./img/6.png  used on input line 292.
 (pdftex.def)             Requested size: 426.79134pt x 83.18968pt.
-<./img/7.png, id=43, 732.7375pt x 124.465pt>
+<./img/7.png, id=41, 732.7375pt x 124.465pt>
 File: ./img/7.png Graphic file (type png)
 <use ./img/7.png>
-Package pdftex.def Info: ./img/7.png  used on input line 289.
+Package pdftex.def Info: ./img/7.png  used on input line 295.
 (pdftex.def)             Requested size: 426.79134pt x 72.4974pt.
-
-Underfull \hbox (badness 10000) in paragraph at lines 291--293
+ [6 <./img/2.png> <./img/3.png> <./img/4.png> <./img/5.png> <./img/6.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 297--299
 
  []
 
-<./img/8.png, id=44, 1358.07375pt x 581.17125pt>
+<./img/8.png, id=50, 1358.07375pt x 581.17125pt>
 File: ./img/8.png Graphic file (type png)
 <use ./img/8.png>
-Package pdftex.def Info: ./img/8.png  used on input line 298.
+Package pdftex.def Info: ./img/8.png  used on input line 304.
 (pdftex.def)             Requested size: 426.79134pt x 182.63538pt.
-<./img/9.png, id=45, 172.645pt x 136.51pt>
+<./img/9.png, id=51, 172.645pt x 136.51pt>
 File: ./img/9.png Graphic file (type png)
 <use ./img/9.png>
-Package pdftex.def Info: ./img/9.png  used on input line 299.
+Package pdftex.def Info: ./img/9.png  used on input line 305.
 (pdftex.def)             Requested size: 426.79134pt x 337.49979pt.
-<./img/10.png, id=46, 213.79875pt x 122.4575pt>
+<./img/10.png, id=52, 213.79875pt x 122.4575pt>
 File: ./img/10.png Graphic file (type png)
 <use ./img/10.png>
-Package pdftex.def Info: ./img/10.png  used on input line 300.
+Package pdftex.def Info: ./img/10.png  used on input line 306.
 (pdftex.def)             Requested size: 426.79134pt x 244.47151pt.
-[6 <./img/4.png> <./img/5.png> <./img/6.png> <./img/7.png>] [7 <./img/8.png> <.
-/img/9.png>]
-<./img/11.png, id=60, 1419.3025pt x 576.1525pt>
+[7 <./img/7.png> <./img/8.png>]
+<./img/11.png, id=59, 1419.3025pt x 576.1525pt>
 File: ./img/11.png Graphic file (type png)
 <use ./img/11.png>
-Package pdftex.def Info: ./img/11.png  used on input line 304.
+Package pdftex.def Info: ./img/11.png  used on input line 310.
 (pdftex.def)             Requested size: 426.79134pt x 173.25148pt.
-<./img/12.png, id=61, 946.53625pt x 571.13374pt>
+ [8 <./img/9.png> <./img/10.png>]
+<./img/12.png, id=65, 946.53625pt x 571.13374pt>
 File: ./img/12.png Graphic file (type png)
 <use ./img/12.png>
-Package pdftex.def Info: ./img/12.png  used on input line 311.
+Package pdftex.def Info: ./img/12.png  used on input line 317.
 (pdftex.def)             Requested size: 426.79134pt x 257.52199pt.
- [8 <./img/10.png> <./img/11.png>]
-<./img/13.png, id=67, 452.69125pt x 401.5pt>
+<./img/13.png, id=66, 452.69125pt x 401.5pt>
 File: ./img/13.png Graphic file (type png)
 <use ./img/13.png>
-Package pdftex.def Info: ./img/13.png  used on input line 315.
+Package pdftex.def Info: ./img/13.png  used on input line 321.
 (pdftex.def)             Requested size: 426.79134pt x 378.52504pt.
- [9 <./img/12.png>] [10 <./img/13.png>] [11] (./hw2.aux) ) 
+ [9 <./img/11.png> <./img/12.png>] [10 <./img/13.png>] [11] (./hw2.aux) ) 
 Here is how much of TeX's memory you used:
  32959 strings out of 492616
  739137 string characters out of 6129482
@@ -1020,21 +1019,21 @@ Here is how much of TeX's memory you used:
  547174 words of font info for 66 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  61i,8n,69p,1604b,317s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2
-019/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/local/texlive/201
-9/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2019
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2019/t
-exmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2019/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2019/texmf
--dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texlive/2019/texmf-d
-ist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/local/texlive/2019/texmf-dis
-t/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2019/texmf-dist/
-fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/2019/texmf-dist/fo
-nts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2019/texmf-dist/font
-s/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2019/texmf-dist/fonts/
-type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2019/texmf-dist/fonts/ty
-pe1/public/cm-super/sftt1095.pfb>
-Output written on hw2.pdf (11 pages, 1754044 bytes).
+{/usr/
+local/texlive/2019/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}</usr/lo
+cal/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/loc
+al/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local
+/texlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/te
+xlive/2019/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/tex
+live/2019/texmf-dist/fonts/type1/public/cm-super/sfbx1440.pfb></usr/local/texli
+ve/2019/texmf-dist/fonts/type1/public/cm-super/sfrm0600.pfb></usr/local/texlive
+/2019/texmf-dist/fonts/type1/public/cm-super/sfrm0800.pfb></usr/local/texlive/2
+019/texmf-dist/fonts/type1/public/cm-super/sfrm0900.pfb></usr/local/texlive/201
+9/texmf-dist/fonts/type1/public/cm-super/sfrm1095.pfb></usr/local/texlive/2019/
+texmf-dist/fonts/type1/public/cm-super/sfrm1200.pfb></usr/local/texlive/2019/te
+xmf-dist/fonts/type1/public/cm-super/sfrm1728.pfb></usr/local/texlive/2019/texm
+f-dist/fonts/type1/public/cm-super/sftt1095.pfb>
+Output written on hw2.pdf (11 pages, 1756212 bytes).
 PDF statistics:
  119 PDF objects out of 1000 (max. 8388607)
  67 compressed objects within 1 object stream

@@ -188,13 +188,19 @@
       proxy server (with a faster transmission speed). This made a later retrieval
       much faster for Jeff.
     \item
-      The cache hit rate is just the complement of the access link utilization
-      rate, thus $1 - 0.45 = \boxed{0.55}$
+      The average amount of data requested from all of the clients is:
+      \[ \frac{10000}{s} * 1.5KB = 15000 \text{KB/s} = 15 \text{MB/s} = 120 \text{Mb/s} \]
+
+      The average amount of data that flows through the access link is:
+      \[ 100 Mb/s * 0.45 = 45 Mb/s \]
+
+      Thus, the average cache hit rate is:
+      \[ \frac{120 - 45}{120} = \boxed{0.625} \]
     \item
       Because the transmission delay from the cache servers are negligible compared
       to the delay from the origin servers, the total delay is entirely comprised
       of the access link utilization multiplied by the delay from origin servers:
-      \[ 0.45 * \text{RTT} = \boxed{0.45 \text{ seconds}} \]
+      \[ (1 - 0.625) * \text{RTT} = \boxed{0.375 \text{ seconds}} \]
   \end{enumerate}
 
 \section*{Developer Tools and the Web}
