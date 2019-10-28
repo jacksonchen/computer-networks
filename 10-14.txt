@@ -1,0 +1,36 @@
+RDT3.0
+  - Sender waits at least one RTT before assuming the ACK was lost (timeout)
+  - Spurious transmissions: Sender thought packet was lost but it was just delayed
+    - Receiver is able to detect duplicated by looking at sequence numbers
+    - Sequence numbers of just 0 and 1 for now (in pipelining, this will need
+      to be increased)
+  - Don't need to change the previous receiver in DFA RFT2.2
+  - In the fourth scenario, if the sender receives duplicate ACKs for the same
+    packet sequence, it will do nothing
+
+  Performance
+    - 0.00027, which is extremely inefficient
+
+Go-back-N pipeline
+  - Start the timer after the base == nextseqnum, this is because only one timer
+    is maintained for the oldest packet (if base == nextseqnum then everything has
+    been acknowledged and no timer is currently running, otherwise not everything
+    has been acknowledged and there is an existing timer running for the oldest packet)
+  - New timer is started after timeout, since we want to track the time for the
+    retransmissions
+  - If receive something corrupt, don't do anything
+  - If we receive a noncorrupt packet, then we will get the acknowledgement number
+    from the packet
+  - Window gets advanced as acknowledgements come back
+    - When receiver gets packets out of order (because previous one fails), it will
+      discard and send the last in order ACK
+    - This way the failed-to-deliver packet can expire and sender will resend window
+      starting at that failed packet
+
+Selective Repeat
+  - Acknowledged and unacknowledged packets can be interleaved
+  - Individual timers for each packet
+  - Window again advances when ACKs come back, but is still constrained by
+    the oldest unACKed packet
+  - Has issue where sequence numbers are wrapped around and may accept a wrong
+    packet if ACKs are lost and receiver's window has wrapped (slide 100)

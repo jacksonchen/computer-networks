@@ -1,0 +1,41 @@
+Congestion control
+  - How should sender limit the rate that they send, and how should they adjust
+    algorithm to change sending rate
+  - Rate you send is inevitable more then the rate receiver will receive data
+    because packets get lost in the process
+  - Slide 146: Blue and red traffic are competing for the top router. However,
+    the blue is rate limited by left router so if red increases output, then
+    it'll overwhelm the top router and hurt the performance for blue. This may
+    cause packets to get dropped, which would be a waste for blue because that means
+    the left router wasted "upstream transmission" capacity because the top
+    router lost the blue packet!
+    - i.e congestion collapse, this is why congestion control is implemented
+  - TCP Slow Start
+    - Acknowledgements trigger increases in window size
+    - TCP is "self-clocking" -> when ACKs come back more slowly, window size will
+      also increase more slowly
+    - cwnd will be congestion window that is incremented (incremented by doubling
+      each time 2 -> 4 -> 8)
+    - When loss occurs, we restart cwnd at 1. We take what we learned about how
+      much the traffic the network can support before experiencing loss, so we
+      use half of the current value to be the threshold.
+
+      Once cwnd reaches threshold, then we switch to linear growth (congestion avoidance)
+      rather than exponential growth
+    - When encountering packet loss:
+        TCP Tahoe -> Cut cwnd back to 1 and then grow
+        TCP Reno -> Cut cwnd to the ssthresh (threshold) and grow linearly (i.e fast recovery)
+
+    - Only move congestion window forward when we get ACKs for new segments.
+      To be able to send more data, need to make window bigger. When we get duplicate ACK,
+      can't move the window, thus must make it bigger instead.
+  - TCP Congestion Control
+    - Additive increase: Increase cwnd by 1 MSS every RTT until loss detected
+    - Multiplicative decrease: Cut cwnd in half after loss
+
+    - Let's say W is the window size where loss occurs, then because of the sawtooth
+      graph, the average amount of throughput performance is 3/4*W
+
+    - Linear increase doesn't make sense in cases where the throughput of the link is
+      super high (e.g 10Gbps requires W = 83,333 in-flight segments, which would
+      take forever to hit using +1 linear increase every time)
