@@ -6,8 +6,8 @@ import socket
 log_path = sys.argv[1]
 alpha = float(sys.argv[2])
 listen_port = int(sys.argv[3])
-proxy_ip = sys.argv[2]
-server_ip = sys.argv[3]
+proxy_ip = sys.argv[4]
+server_ip = sys.argv[5]
 
 # Proxy to handle client (proxy acts as server)
 c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
