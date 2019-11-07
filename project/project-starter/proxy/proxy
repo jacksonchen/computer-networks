@@ -74,16 +74,20 @@ def handle_from_client(client_connection):
             return True
 
 while server_connected:
-    client_connection, client_address = c.accept()
-    print "Received a connection"
-
     try:
-        keep_alive = handle_from_client(client_connection)
-        if (not keep_alive):
+        client_connection, client_address = c.accept()
+        print "Received a connection"
+
+        try:
+            keep_alive = handle_from_client(client_connection)
+            if (not keep_alive):
+                client_connection.close()
+                break
+        finally:
             client_connection.close()
-            break
-    finally:
-        client_connection.close()
+    except KeyboardInterrupt:
+        s.close()
+        c.close()
 
 s.close()
 c.close()
