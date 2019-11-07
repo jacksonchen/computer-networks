@@ -1,0 +1,45 @@
+testZip:1
+testExcutable:1
+testHandin:1
+testFileName:1
+Passed testRunsWithoutError. (1 point(s))
+
+
+_________###_________
+
+Passed testConnection. (2 point(s))
+
+
+_________###_________
+
+Passed testSimpleMessageToServer. (1 point(s))
+
+
+_________###_________
+
+Passed testSimpleMessageBackAndForth. (1 point(s))
+
+
+_________###_________
+
+Passed testMessageFromServerFirst. (1 point(s))
+
+
+_________###_________
+
+Error at testProxyClosesBothConnections (0 point(s)):
+Timeout
+
+_________###_________
+
+Passed testLongMessageBackAndForth. (2 point(s))
+
+
+_________###_________
+
+Error at testHandlesMultipleClients (0 point(s)):
+Timeout
+
+_________###_________
+
+Final score is: 12 out of 15.

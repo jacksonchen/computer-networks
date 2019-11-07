@@ -218,8 +218,8 @@
 
           SampleRTT5 has the largest impact on the EstimatedRTT because the alpha
           value is 0.1, giving 9 times more weight to the previous estimate
-          than to the current sample. This disproportionately adds weight
-          to prior estimates.
+          than to the current sample. This combined with the very few number of samples
+          makes a disproportionate amount of weight added to prior estimates.
         \item
           Given n SampleRTT's, with $\text{SampleRTT}_1$ being the most recent one:
           \[ \text{EstimatedRTT} = \left( \alpha \sum^{n-1}_{i=1} (1 - \alpha)^{i-1} \text{SampleRTT}_i \right) + (1 - \alpha)^{n-1} \text{SampleRTT}_n \]
@@ -272,7 +272,7 @@
       On the receiver's side, many TCP implementations will correctly buffer
       out-of-order segments that are received, which is similar to a Selective
       Repeat behavior. On the sender's side, retransmission also works like
-      Selective Repeat, where it would only the specific retransmit segments that
+      Selective Repeat, where it would only retransmit specific retransmit segments that
       are timed out.
     \item
       Just using NAK's is not sufficient to allow A to tell the status of the segments.

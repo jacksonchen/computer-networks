@@ -1,0 +1,62 @@
+Network Layer
+  - Transport layer only deals with the end hosts, while the network layer deals
+    with everything in between
+    - Every host in between sending and receiving side (e.g routers) has a network layer
+      and uses the network layer protocol
+  - Receiving side, unpackages the segment
+
+  - Key network layer functions
+    - Forwarding
+      - Deciding what to do with packets when you receive them (where should I forward
+        it to, or to application layer if it's meant for me)
+      - Data Plane (determines how datagram arriving on input port is forward to
+        router output port)
+    - Routing
+      - Determines the end to end route taken by packets
+      - Routing algorithms exchange info between networking devices, and this allows
+        routers to create the forwarding table and routing table
+      - Control plane (populate forwarding table)
+        - Determine how datagram routed among routers along end-end path
+          from source to destination
+        - Approaches: traditional routing algorithms, software-defined networking
+        - Most control plane packets are actually data plane packets (hop to hop packets)
+        - Logically centralized control plane -> Control agent that exchanges info
+          with remote controller
+          - Used within each subnetwork on the Internet, not necessary private networks
+
+Routers
+  - Who is responsible for routers?
+    - Backbone providers, Tier 1 ISP's
+  - Router processor (contains forwarding table) and high-seed switching fabric
+    (which does the packet switching)
+  - Packet queueing on the input port
+  - Forwarding
+    - Destination-based: Based on destination IP address of packet, it knows
+      which output port to forward it to
+      - Longest prefix matching (forward to the longest number of bits that match
+        between destination IP and forwarding table entry, i.e highest specificity)
+    - Generalized: Forward based on any set of header field values
+  - Switching fabrics
+    - Transfer packet from input buffer to appropriate output buffer
+    - Memory switching (first gen routers), stored in system memory
+      - Advantage: Very simple to implement
+      - Disadvantage: Speed limited by memory bandwidth, can't read and write
+        to RAM at the same time
+    - Bus switching
+      - Shared bus with very fast speed.
+      - Disadvantage: However, only one datagram can use the bus at a time
+      - Not really used anymore
+    - Crossbar (interconnection network)
+      - Does not have the bandwidth limitations that the bus has
+    - If fabric is slower than input ports combined, then queueing will occur
+      - Head of line blocking (queued datagram at front prevents others in queue
+        from moving forward)
+  - Output ports
+    - Amount of memory doesn't not translate into more spots because the packets take
+      up space
+    - Priority scheduling: Whoever gets highest priority (up to implementation)
+
+QOS, time scale trade off
+  - Ranking traffic, may be an issue if another router prioritizes a completely
+    different set of traffic
+  - Reserve capacity (can prioritize plannable use applications such as telesurgery)
