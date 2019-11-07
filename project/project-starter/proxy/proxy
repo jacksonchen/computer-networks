@@ -28,6 +28,8 @@ def send_to_server(client_message):
     message = ""
     while True:
         data = s.recv(16).decode()
+        print "Receiving data from server"
+        print data
 
         if data:
             if '\n' in data:
@@ -46,7 +48,7 @@ def handle_from_client(client_connection):
     message = ""
     while True:
         data = client_connection.recv(16).decode()
-        print "Received data"
+        print "Received data from client"
         print data
 
         if data:
