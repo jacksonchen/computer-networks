@@ -6,7 +6,7 @@ import socket
 log_path = sys.argv[1]
 alpha = float(sys.argv[2])
 listen_port = int(sys.argv[3])
-proxy_ip = sys.argv[4]
+proxy_ip = sys.argv[4] # Fake IP
 server_ip = sys.argv[5]
 
 # Proxy to handle client (proxy acts as server)
@@ -46,6 +46,8 @@ def handle_from_client(client_connection):
     message = ""
     while True:
         data = client_connection.recv(16).decode()
+        print "Received data"
+        print data
 
         if data:
             if '\n' in data:
