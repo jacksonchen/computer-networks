@@ -24,8 +24,8 @@ server_connected = True
 # Returns the response from the server
 def send_to_server(client_message):
     print "Client message", client_message
-    s.sendall(client_message.encode())
-    # s.sendall("GET /index.html HTTP/1.1".encode())
+    # s.sendall(client_message.encode())
+    s.sendall("GET 4.0.0.1 HTTP/1.1".encode())
 
     message = ""
     while True:
