@@ -58,10 +58,11 @@ def send_to_server(client_message):
 
                 # Using Content-Length to find the end of message
                 if expected_length == 0:
+                    print "RETURNING MESSAGE"
                     return message + DELIMIT_CHAR
         else:
             print "Server terminated the connection"
-            connect_to_server()
+            # connect_to_server()
             return message + DELIMIT_CHAR
 
 # Logic that handles accepting a client connection
