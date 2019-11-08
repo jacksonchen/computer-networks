@@ -92,7 +92,7 @@ def handle_from_client(client_connection):
                     message = ""
 
                     if response[1] == False: # Server terminated, thus reconnect
-                        reset_server_connection(s)
+                        reset_server_connection()
                 except Exception as e:
                     print "Exception!", e
                     return False # Server timed out or errored, thus end proxy
