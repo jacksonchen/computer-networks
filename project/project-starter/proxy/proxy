@@ -94,8 +94,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                 # Change manifest
                 if result.groups()[1] == "vod/big_buck_bunny.f4m":
                     message_remaining = "\n".join(message[1:])
-                    message = result.groups()[0] + "vod/big_buck_bunny_nolist.f4m"
-                            + result.groups()[2] + message_remaining
+                    message = result.groups()[0] + "vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
 
                 response = send_to_server(server_socket, message)
 
