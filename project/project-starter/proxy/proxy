@@ -34,8 +34,9 @@ def get_bitrates(server_socket, message):
 
     bitrate_array = manifest_body.split("<media")
     bitrate_dict = {}
-    print bitrate_array
+    # print bitrate_array
     for bitrate_element in bitrate_array:
+        print result.groups()
         result = re.search("url=\"(.+)\"\n.+bitrate=\"(.+)\"", bitrate_element)
         bitrate_dict.add(int(result.groups()[1]), result.groups()[0])
 
