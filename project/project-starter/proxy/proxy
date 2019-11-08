@@ -140,6 +140,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                     if response[1] == False:
                         server_socket = connect_to_server(proxy_ip, server_ip)
                 except Exception, e:
+                    print "handle_from_client exception:", e
                     client_socket.close()
                     server_socket.close()
                     return
