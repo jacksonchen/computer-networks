@@ -41,7 +41,7 @@ def get_bitrates(server_socket, message):
         print "======="
         if result != None:
             print result.groups()
-            bitrate_dict.add(int(result.groups()[1]), result.groups()[0])
+            bitrate_dict[int(result.groups()[1])] = result.groups()[0]
 
     print bitrate_dict
 
