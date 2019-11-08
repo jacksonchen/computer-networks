@@ -2,9 +2,99 @@
 import sys
 import socket
 import re
+import thread
+import select
 
 DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
 SERVER_BIND_PORT = 4999
+BUFFER_SIZE = 1024
+
+# Creating a method to be called later
+def connect_to_server(proxy_ip, server_ip):
+    # server_socket.close()
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((proxy_ip, SERVER_BIND_PORT))
+    server_socket.connect((server_ip, 8080))
+    return server_socket
+
+# Logic that handles sending the client message to the server
+# Returns the response from the server
+def send_to_server(server_socket, client_message):
+    client_first_get = client_message.split('\n')[0]
+    get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
+    print "get_request: ", get_request
+    server_socket.sendall(get_request)
+
+    message = ""
+    # expected_length = -1
+    while True:
+        data = server_socket.recv(BUFFER_SIZE)
+
+        while ready_server_socket in select.select([client_socket], [], [])[0]:
+            data += ready_server_socket.recv(BUFFER_SIZE)
+
+        print "Receiving data from server"
+        # print data
+
+        if data:
+            return [message + DELIMIT_CHAR, True]
+            # if expected_length == -1 and DELIMIT_CHAR in data: # To differentiate the header from the body
+            #     header = data.split(DELIMIT_CHAR)[0]
+            #     result = re.search("Content-Length: (\d+)", header)
+            #
+            #     # Add header to the message
+            #     message += data
+            #     body_length = len(data) - len(data.split(DELIMIT_CHAR)[0]) - len(DELIMIT_CHAR)
+            #     expected_length = int(result.groups()[0]) - body_length
+            #     print "expected_length: ", expected_length
+            # else: # Handling the body
+            #     expected_length = max(expected_length - len(data), 0)
+            #     print "expected_length: ", expected_length
+            #     message += data
+            #
+            #     # Using Content-Length to find the end of message
+            #     if expected_length == 0:
+            #         print "RETURNING MESSAGE"
+            #         # print message
+            #         return [message + DELIMIT_CHAR, True]
+        else:
+            print "Server terminated the connection"
+            print "expected_length: ", expected_length
+            return [message + DELIMIT_CHAR, False]
+
+# Logic that handles accepting a client connection
+# Returns whether or not the proxy should be kept alive or not
+def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip, server_ip):
+    server_socket = connect_to_server(proxy_ip, server_ip)
+    message = ""
+    while True:
+        data = client_socket.recv(BUFFER_SIZE)
+
+        while ready_client_socket in select.select([client_socket], [], [])[0]:
+            data += ready_client_socket.recv(BUFFER_SIZE)
+
+        print "Received data from client"
+        # print data
+
+        if data:
+            message += data.split(DELIMIT_CHAR)[0]
+            server_message = message + DELIMIT_CHAR # Add the newline character for formatting
+
+            try:
+                response = send_to_server(server_socket, server_message)
+                client_socket.sendall(response[0])
+                message = ""
+
+                if response[1] == False: # Server terminated, thus reconnect
+                    connect_to_server(proxy_ip, server_ip)
+            except Exception as e:
+                print "Exception!", e
+                return False # Server timed out or errored, thus end proxy
+        else:
+            print "Client terminated the connection"
+            return False
+
+### Start of execution
 
 # Input arguments
 log_path = sys.argv[1]
@@ -13,109 +103,24 @@ listen_port = int(sys.argv[3])
 proxy_ip = sys.argv[4] # Fake IP
 server_ip = sys.argv[5]
 
-# Proxy to handle client (proxy acts as server)
+# Proxy listen socket to handle client browsers (proxy acts as server)
 c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 c.bind(('', listen_port))
 c.listen(1)
 
-# Proxy to direct to server (proxy acts as client)
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((proxy_ip, SERVER_BIND_PORT))
-s.connect((server_ip, 8080))
-
-# Creating a method to be called later
-def reset_server_connection():
-    global s
-
-    s.close()
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((proxy_ip, SERVER_BIND_PORT))
-    s.connect((server_ip, 8080))
-
-# Logic that handles sending the client message to the server
-# Returns the response from the server
-def send_to_server(client_message):
-    client_first_get = client_message.split('\n')[0]
-    get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
-    print "get_request: ", get_request
-    s.sendall(get_request.encode())
-
-    message = ""
-    expected_length = -1
-    while True:
-        # data = s.recv(1024).decode('utf8')
-        data = s.recv(1024)
-        print "Receiving data from server"
-        # print data
-
-        if data:
-            if expected_length == -1 and DELIMIT_CHAR in data: # To differentiate the header from the body
-                header = data.split(DELIMIT_CHAR)[0]
-                result = re.search("Content-Length: (\d+)", header)
-
-                # Add header to the message
-                message += data
-                body_length = len(data) - len(data.split(DELIMIT_CHAR)[0]) - len(DELIMIT_CHAR)
-                expected_length = int(result.groups()[0]) - body_length
-                print "expected_length: ", expected_length
-            else: # Handling the body
-                expected_length = max(expected_length - len(data), 0)
-                print "expected_length: ", expected_length
-                message += data
-
-                # Using Content-Length to find the end of message
-                if expected_length == 0:
-                    print "RETURNING MESSAGE"
-                    # print message
-                    return [message + DELIMIT_CHAR, True]
-        else:
-            print "Server terminated the connection"
-            print "expected_length: ", expected_length
-            return [message + DELIMIT_CHAR, False]
-
-# Logic that handles accepting a client connection
-# Returns whether or not the proxy should be kept alive or not
-def handle_from_client(client_connection):
-    message = ""
-    while True:
-        # data = client_connection.recv(1024).decode('utf8')
-        data = client_connection.recv(1024)
-        print "Received data from client"
-        print data
-
-        if data:
-            if DELIMIT_CHAR in data:
-                message += data.split(DELIMIT_CHAR)[0]
-                server_message = message + DELIMIT_CHAR # Add the newline character for formatting
-
-                try:
-                    response = send_to_server(server_message)
-                    client_connection.sendall(response[0])
-                    message = ""
-
-                    if response[1] == False: # Server terminated, thus reconnect
-                        reset_server_connection()
-                except Exception as e:
-                    print "Exception!", e
-                    return False # Server timed out or errored, thus end proxy
-            else:
-                message += data
-        else:
-            print "Client terminated the connection"
-            return False
-
 while True:
     try:
-        client_connection, client_address = c.accept()
+        # TODO: Lock on the log
+        client_socket, client_address = c.accept()
         print "Received a connection"
+        thread.start_new_thread(handle_from_client, (log_path, alpha, client_socket, client_address, proxy_ip, server_ip))
 
-        try:
-            keep_alive = handle_from_client(client_connection)
-            # if (not keep_alive):
-            client_connection.close()
-                # break
-        finally:
-            client_connection.close()
+        # try:
+        #     keep_alive = handle_from_client(client_socket)
+        #     client_connection.close()
+        # finally:
+        #     client_connection.close()
     except KeyboardInterrupt:
-        s.close()
         c.close()
+    except Exception, e:
+        print "Exception at proxy client level: ", e
