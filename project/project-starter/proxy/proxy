@@ -5,6 +5,7 @@ import re
 import thread
 import select
 import time
+import xml.etree.ElementTree as ET
 
 DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
 SERVER_BIND_PORT = 4999
@@ -19,6 +20,10 @@ def connect_to_server(proxy_ip, server_ip,):
     server_socket.connect((server_ip, 8080))
     SERVER_BIND_PORT += 1
     return server_socket
+
+def parse_manifest(server_socket, message):
+    manifest_response = send_to_server(server_socket, message)
+    print manifest_response
 
 # Logic that handles sending the client message to the server
 # Returns the response from the server, whether or not the server connection is closed,
@@ -93,6 +98,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
 
                 # Change manifest
                 if result.groups()[1] == "/vod/big_buck_bunny.f4m":
+                    parse_manifest(server_socket, message)
                     message_remaining = "\n".join(message[1:])
                     message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
 
