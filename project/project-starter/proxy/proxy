@@ -10,6 +10,7 @@ import xml.etree.ElementTree as ET
 DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
 SERVER_BIND_PORT = 4999
 BUFFER_SIZE = 1024
+BITRATE_MAP = {}
 
 # Creating a method to be called later
 def connect_to_server(proxy_ip, server_ip,):
@@ -23,6 +24,11 @@ def connect_to_server(proxy_ip, server_ip,):
 
 # Returns a dictionary mapping the bitrates to their URL's from the manifest file
 def get_bitrates(server_socket, message):
+    global BITRATE_MAP
+
+    if len(BITRATE_MAP) != 0:
+        return
+
     manifest_response = send_to_server(server_socket, message)
 
     # Cut out the HTTP header from the manifest
@@ -40,7 +46,7 @@ def get_bitrates(server_socket, message):
         if result != None:
             bitrate_dict[int(result.groups()[1])] = result.groups()[0]
 
-    return bitrate_dict
+    BITRATE_MAP = bitrate_dict
 
 # Logic that handles sending the client message to the server
 # Returns the response from the server, whether or not the server connection is closed,
@@ -75,7 +81,6 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
 
         # Scope the following variables to be accessible across the entire method
         throughput_avg = -1
-        bitrate_map = {}
 
         while True:
             data = client_socket.recv(BUFFER_SIZE)
@@ -96,14 +101,14 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                     # Change manifest
                     if result.groups()[1] == "/vod/big_buck_bunny.f4m":
                         print "Changing the manifest"
-                        bitrate_map = get_bitrates(server_socket, message)
+                        get_bitrates(server_socket, message)
                         message_remaining = "\n".join(message[1:])
                         message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
-                    elif throughput_avg != -1 and len(bitrate_map) > 0 and result.groups()[1].startswith("/vod"):
+                    elif throughput_avg != -1 and len(BITRATE_MAP) > 0 and result.groups()[1].startswith("/vod"):
                         bitrate_search = re.search("/vod/\d+(Seg.+)", result.groups()[1])
                         message_remaining = "\n".join(message[1:])
 
-                        bitrates = bitrate_map.keys()
+                        bitrates = BITRATE_MAP.keys()
                         max_bitrate = float(throughput_avg) / 1.5
                         calculated_rate = 0
                         for bitrate in bitrates:
@@ -112,7 +117,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         if calculated_rate == 0:
                             calculated_rate = min(bitrates)
 
-                        message = result.groups()[0] + "/vod/" + bitrate_map[calculated_rate] + bitrate_search.groups()[1] + result.groups()[2] + message_remaining
+                        message = result.groups()[0] + "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[1] + result.groups()[2] + message_remaining
                         print "New calculated rate: ", rate
 
                     response = send_to_server(server_socket, message)
