@@ -43,7 +43,7 @@ def send_to_server(server_socket, client_message):
 
         if data:
             result = re.search("Content-Length: (\d+)", data.split(DELIMIT_CHAR)[0])
-            return [data + DELIMIT_CHAR, True, int(result.groups()[0]]
+            return [data + DELIMIT_CHAR, True, int(result.groups()[0])]
             # if expected_length == -1 and DELIMIT_CHAR in data: # To differentiate the header from the body
             #     header = data.split(DELIMIT_CHAR)[0]
 
