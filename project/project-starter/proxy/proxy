@@ -6,6 +6,7 @@ import thread
 import select
 import time
 import xml.etree.ElementTree as ET
+import traceback
 
 DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
 SERVER_BIND_PORT = 4999
@@ -105,6 +106,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         message_remaining = "\n".join(message[1:])
                         message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
                     elif throughput_avg != -1 and len(BITRATE_MAP) > 0 and result.groups()[1].startswith("/vod"):
+                        print "Within everything"
                         bitrate_search = re.search("/vod/\d+(Seg.+)", result.groups()[1])
                         message_remaining = "\n".join(message[1:])
 
@@ -141,6 +143,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         server_socket = connect_to_server(proxy_ip, server_ip)
                 except Exception, e:
                     print "handle_from_client exception:", e
+                    print traceback.format_exc()
                     client_socket.close()
                     server_socket.close()
                     return
