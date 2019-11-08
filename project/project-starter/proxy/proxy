@@ -43,7 +43,8 @@ def send_to_server(client_message):
     message = ""
     expected_length = -1
     while True:
-        data = s.recv(1024).decode()
+        # data = s.recv(1024).decode()
+        data = s.recv(1024)
         print "Receiving data from server"
         # print data
 
