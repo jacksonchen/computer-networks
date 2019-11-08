@@ -30,7 +30,7 @@ def send_to_server(server_socket, client_message):
     while True:
         data = server_socket.recv(BUFFER_SIZE)
 
-        while ready_server_socket in select.select([client_socket], [], [])[0]:
+        while ready_server_socket in select.select([server_socket], [], [])[0]:
             data += ready_server_socket.recv(BUFFER_SIZE)
 
         print "Receiving data from server"
@@ -111,6 +111,7 @@ c.listen(1)
 while True:
     try:
         # TODO: Lock on the log
+
         client_socket, client_address = c.accept()
         print "Received a connection"
         thread.start_new_thread(handle_from_client, (log_path, alpha, client_socket, client_address, proxy_ip, server_ip))
