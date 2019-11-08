@@ -18,7 +18,11 @@ c.bind(('', listen_port))
 c.listen(1)
 
 # Proxy to direct to server (proxy acts as client)
-s = None # Will be initialized below
+s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+s.bind((proxy_ip, 4999))
+s.connect((server_ip, 8080))
+
+# Creating a method to be called later
 def connect_to_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((proxy_ip, 4999))
