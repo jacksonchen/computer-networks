@@ -60,6 +60,7 @@ def send_to_server(client_message):
                 message += data
         else:
             print "Server terminated the connection"
+            connect_to_server()
             return message + DELIMIT_CHAR
 
 # Logic that handles accepting a client connection
@@ -78,11 +79,11 @@ def handle_from_client(client_connection):
 
                 try:
                     response = send_to_server(server_message)
-                    if response == DELIMIT_CHAR:
-                        connect_to_server() # Server terminated, thus reconnect
-                    else:
-                        client_connection.sendall(response.encode())
-                        message = ""
+                    # if response == DELIMIT_CHAR:
+                    #     connect_to_server() # Server terminated, thus reconnect
+                    # else:
+                    client_connection.sendall(response.encode())
+                    message = ""
                 except:
                     return False # Server timed out or errored, thus end proxy
             else:
