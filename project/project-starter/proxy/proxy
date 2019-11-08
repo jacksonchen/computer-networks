@@ -4,6 +4,7 @@ import socket
 import re
 
 DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
+SERVER_BIND_PORT = 4999
 
 # Input arguments
 log_path = sys.argv[1]
@@ -19,14 +20,16 @@ c.listen(1)
 
 # Proxy to direct to server (proxy acts as client)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((proxy_ip, 4999))
+s.bind((proxy_ip, SERVER_BIND_PORT))
 s.connect((server_ip, 8080))
+SERVER_BIND_PORT += 1
 
 # Creating a method to be called later
 def connect_to_server():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind((proxy_ip, 4999))
+    s.bind((proxy_ip, SERVER_BIND_PORT))
     s.connect((server_ip, 8080))
+    SERVER_BIND_PORT += 1
 
 # Logic that handles sending the client message to the server
 # Returns the response from the server
@@ -96,7 +99,7 @@ def handle_from_client(client_connection):
                 message += data
         else:
             print "Client terminated the connection"
-            return True
+            return False
 
 while True:
     try:
@@ -105,8 +108,8 @@ while True:
 
         try:
             keep_alive = handle_from_client(client_connection)
-            if (not keep_alive):
-                client_connection.close()
+            # if (not keep_alive):
+            client_connection.close()
                 # break
         finally:
             client_connection.close()
