@@ -124,4 +124,5 @@ while True:
     except KeyboardInterrupt:
         c.close()
     except Exception, e:
+        c.close()
         print "Exception at proxy client level: ", e
