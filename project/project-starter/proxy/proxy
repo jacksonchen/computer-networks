@@ -21,7 +21,7 @@ def connect_to_server(proxy_ip, server_ip,):
     SERVER_BIND_PORT += 1
     return server_socket
 
-def parse_manifest(server_socket, message):
+def get_bitrates(server_socket, message):
     manifest_response = send_to_server(server_socket, message)
 
     # Cut out the HTTP header from the manifest
@@ -111,30 +111,35 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
 
                 result = re.search("^(GET )(.+)( HTTP.+)", message.split('\n')[0])
 
-                # Change manifest
-                if result.groups()[1] == "/vod/big_buck_bunny.f4m":
-                    parse_manifest(server_socket, message)
-                    message_remaining = "\n".join(message[1:])
-                    message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
+                try:
+                    # Change manifest
+                    if result.groups()[1] == "/vod/big_buck_bunny.f4m":
+                        get_bitrates(server_socket, message)
+                        message_remaining = "\n".join(message[1:])
+                        message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
 
-                response = send_to_server(server_socket, message)
+                    response = send_to_server(server_socket, message)
 
-                # Throughput Calculation
-                end_time = time.time()
-                chunk_size = float(response[2])
-                throughput_new = chunk_size / float(end_time - start_time)
+                    # Throughput Calculation
+                    end_time = time.time()
+                    chunk_size = float(response[2])
+                    throughput_new = chunk_size / float(end_time - start_time)
 
-                if throughput_avg == -1:
-                    throughput_avg = throughput_new # Initialize to first value
-                else:
-                    throughput_avg = alpha * throughput_new + (1 - alpha) * throughput_avg
+                    if throughput_avg == -1:
+                        throughput_avg = throughput_new # Initialize to first value
+                    else:
+                        throughput_avg = alpha * throughput_new + (1 - alpha) * throughput_avg
 
-                # Send the response back to the client
-                client_socket.sendall(response[0])
+                    # Send the response back to the client
+                    client_socket.sendall(response[0])
 
-                # Check if server terminated, if so reconnect
-                if response[1] == False:
-                    server_socket = connect_to_server(proxy_ip, server_ip)
+                    # Check if server terminated, if so reconnect
+                    if response[1] == False:
+                        server_socket = connect_to_server(proxy_ip, server_ip)
+                except Exception, e:
+                    client_socket.close()
+                    server_socket.close()
+                    return
             else:
                 print "Client terminated the connection"
                 client_socket.close()
