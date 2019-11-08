@@ -21,7 +21,7 @@ def connect_to_server(proxy_ip, server_ip,):
     SERVER_BIND_PORT += 1
     return server_socket
 
-# Returns a dictionary mapping the bitrates to their URL's
+# Returns a dictionary mapping the bitrates to their URL's from the manifest file
 def get_bitrates(server_socket, message):
     manifest_response = send_to_server(server_socket, message)
 
@@ -58,7 +58,7 @@ def send_to_server(server_socket, client_message):
             ready_server_socket = select.select([server_socket], [], [], 1)[0][0]
             data += ready_server_socket.recv(BUFFER_SIZE)
 
-        print "Receiving data from server"
+        # print "Receiving data from server"
 
         if data:
             result = re.search("Content-Length: (\d+)", data.split(DELIMIT_CHAR)[0])
@@ -84,8 +84,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                 data += ready_client_socket.recv(BUFFER_SIZE)
 
             start_time = time.time()
-            print "Received data from client"
-            # print data
+            # print "Received data from client"
 
             if data:
                 # Make sure proxy cuts off the message at delimiter character
@@ -100,8 +99,21 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         bitrate_map = get_bitrates(server_socket, message)
                         message_remaining = "\n".join(message[1:])
                         message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
-                    elif result.groups()[1].startswith("/vod"):
-                        print result.groups()[1]
+                    elif throughput_avg != -1 and len(bitrate_map) > 0 and result.groups()[1].startswith("/vod"):
+                        bitrate_search = re.search("/vod/\d+(Seg.+)", result.groups()[1])
+                        message_remaining = "\n".join(message[1:])
+
+                        bitrates = bitrate_map.keys()
+                        max_bitrate = float(throughput_avg) / 1.5
+                        calculated_rate = 0
+                        for bitrate in bitrates:
+                            if bitrate < max_bitrate and max_bitrate - bitrate < max_bitrate - calculated_rate:
+                                calculated_rate = bitrate
+                        if calculated_rate == 0:
+                            calculated_rate = min(bitrates)
+
+                        message = result.groups()[0] + "/vod/" + bitrate_map[calculated_rate] + bitrate_search.groups()[1] + result.groups()[2] + message_remaining
+                        print "New calculated rate: ", rate
 
                     response = send_to_server(server_socket, message)
 
