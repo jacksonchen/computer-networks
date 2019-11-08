@@ -106,7 +106,6 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         message_remaining = "\n".join(message[1:])
                         message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
                     elif throughput_avg != -1 and len(BITRATE_MAP) > 0 and result.groups()[1].startswith("/vod"):
-                        print "Within everything"
                         bitrate_search = re.search("/vod/\d+(Seg.+)", result.groups()[1])
                         message_remaining = "\n".join(message[1:])
 
@@ -120,7 +119,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                             calculated_rate = min(bitrates)
 
                         message = result.groups()[0] + "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[0] + result.groups()[2] + message_remaining
-                        print "New calculated rate: ", rate
+                        print "New calculated rate: ", calculated_rate
 
                     response = send_to_server(server_socket, message)
 
