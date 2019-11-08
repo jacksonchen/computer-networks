@@ -30,7 +30,8 @@ def send_to_server(server_socket, client_message):
     while True:
         data = server_socket.recv(BUFFER_SIZE)
 
-        while ready_server_socket in select.select([server_socket], [], [])[0]:
+        while len(select.select([server_socket], [], [])[0]) > 0:
+            ready_server_socket = select.select([server_socket], [], [])[0]
             data += ready_server_socket.recv(BUFFER_SIZE)
 
         print "Receiving data from server"
@@ -71,7 +72,8 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
         while True:
             data = client_socket.recv(BUFFER_SIZE)
 
-            while ready_client_socket in select.select([client_socket], [], [])[0]:
+            while len(select.select([client_socket], [], [])[0]) > 0:
+                ready_client_socket = select.select([client_socket], [], [])[0]
                 data += ready_client_socket.recv(BUFFER_SIZE)
 
             print "Received data from client"
