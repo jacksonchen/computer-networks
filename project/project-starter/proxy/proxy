@@ -72,9 +72,13 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
         while True:
             data = client_socket.recv(BUFFER_SIZE)
 
+            print "Received first data from client", data
+            print "====="
+
             while len(select.select([client_socket], [], [])[0]) > 0:
                 ready_client_socket = select.select([client_socket], [], [])[0]
                 data += ready_client_socket.recv(BUFFER_SIZE)
+                print data
 
             print "Received data from client"
             # print data
@@ -92,12 +96,16 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         connect_to_server(proxy_ip, server_ip)
                 except Exception as e:
                     print "Exception!", e
-                    return False # Server timed out or errored, thus end proxy
+                    client_socket.close()
+                    return # Server timed out or errored, thus end proxy
             else:
                 print "Client terminated the connection"
-                return False
+                client_socket.close()
+                return
     except Exception, e:
         print "Exception inside handle_from_client: ", e
+        client_socket.close()
+        return
 
 ### Start of execution
 
