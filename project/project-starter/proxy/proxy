@@ -66,7 +66,7 @@ def send_to_server(client_message):
                 # Using Content-Length to find the end of message
                 if expected_length == 0:
                     print "RETURNING MESSAGE"
-                    print message
+                    # print message
                     return [message + DELIMIT_CHAR, True]
         else:
             print "Server terminated the connection"
@@ -78,7 +78,8 @@ def send_to_server(client_message):
 def handle_from_client(client_connection):
     message = ""
     while True:
-        data = client_connection.recv(1024).decode()
+        # data = client_connection.recv(1024).decode()
+        data = client_connection.recv(1024)
         print "Received data from client"
         print data
 
