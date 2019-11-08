@@ -52,8 +52,10 @@ def send_to_server(client_message):
                 message += data
                 body_length = len(data) - len(data.split(DELIMIT_CHAR)[0]) - len(DELIMIT_CHAR)
                 expected_length = int(result.groups()[0]) - body_length
+                print "expected_length: ", expected_length
             else: # Handling the body
                 expected_length = max(expected_length - len(data), 0)
+                print "expected_length: ", expected_length
                 message += data
 
                 # Using Content-Length to find the end of message
@@ -63,7 +65,7 @@ def send_to_server(client_message):
                     return [message + DELIMIT_CHAR, True]
         else:
             print "Server terminated the connection"
-            # connect_to_server()
+            print "expected_length: ", expected_length
             return [message + DELIMIT_CHAR, False]
 
 # Logic that handles accepting a client connection
