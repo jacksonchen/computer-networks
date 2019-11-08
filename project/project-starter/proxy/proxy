@@ -103,6 +103,3 @@ while True:
     except KeyboardInterrupt:
         s.close()
         c.close()
-
-s.close()
-c.close()
