@@ -48,13 +48,13 @@ def send_to_server(client_message):
                 expected_length = int(result.groups()[0]) - body_length
             elif expected_length == 0: # Using Content-Length to find the end of message
                 print "===== message\n", message
-                return message
+                return message + DELIMIT_CHAR
             else:
                 expected_length = max(expected_length - len(data), 0)
                 message += data
         else:
             print "Server terminated the connection"
-            return message
+            return message + DELIMIT_CHAR
 
 # Logic that handles accepting a client connection
 # Returns whether or not the proxy should be kept alive or not
