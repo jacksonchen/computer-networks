@@ -27,7 +27,8 @@ server_connected = True
 # Returns the response from the server
 def send_to_server(client_message):
     client_first_get = client_message.split('\n')[0]
-    get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
+    get_request = client_first_get o+ "\nHost: " + server_ip + "\n\n"
+    print "get_request: ", get_request
     s.sendall(get_request.encode())
 
     message = ""
@@ -72,7 +73,7 @@ def handle_from_client(client_connection):
 
                 try:
                     response = send_to_server(server_message)
-                    if response == None:
+                    if response == DELIMIT_CHAR:
                         return False # Server terminated, thus end proxy
                     else:
                         client_connection.sendall(response.encode())
