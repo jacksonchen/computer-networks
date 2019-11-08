@@ -32,8 +32,8 @@ def send_to_server(server_socket, client_message):
     while True:
         data = server_socket.recv(BUFFER_SIZE)
 
-        while len(select.select([server_socket], [], [])[0]) > 0:
-            ready_server_socket = select.select([server_socket], [], [])[0]
+        while len(select.select([server_socket], [], [], 1)[0]) > 0:
+            ready_server_socket = select.select([server_socket], [], [], 1)[0]
             data += ready_server_socket.recv(BUFFER_SIZE)
 
         print "Receiving data from server"
@@ -77,8 +77,8 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
             print "Received first data from client", data
             print "====="
 
-            while len(select.select([client_socket], [], [])[0]) > 0:
-                ready_client_socket = select.select([client_socket], [], [])[0]
+            while len(select.select([client_socket], [], [], 1)[0]) > 0:
+                ready_client_socket = select.select([client_socket], [], [], 1)[0]
                 data += ready_client_socket.recv(BUFFER_SIZE)
                 print data
 
@@ -95,18 +95,21 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                     message = ""
 
                     if response[1] == False: # Server terminated, thus reconnect
-                        connect_to_server(proxy_ip, server_ip)
+                        server_socket = connect_to_server(proxy_ip, server_ip)
                 except Exception as e:
                     print "Exception!", e
                     client_socket.close()
+                    server_socket.close()
                     return # Server timed out or errored, thus end proxy
             else:
                 print "Client terminated the connection"
                 client_socket.close()
+                server_socket.close()
                 return
     except Exception, e:
         print "Exception inside handle_from_client: ", e
         client_socket.close()
+        server_socket.close()
         return
 
 ### Start of execution
