@@ -18,10 +18,11 @@ c.bind(('', listen_port))
 c.listen(1)
 
 # Proxy to direct to server (proxy acts as client)
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((proxy_ip, 4999))
-s.connect((server_ip, 8080))
-server_connected = True
+s = None # Will be initialized below
+def connect_to_server():
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.bind((proxy_ip, 4999))
+    s.connect((server_ip, 8080))
 
 # Logic that handles sending the client message to the server
 # Returns the response from the server
@@ -74,19 +75,20 @@ def handle_from_client(client_connection):
                 try:
                     response = send_to_server(server_message)
                     if response == DELIMIT_CHAR:
-                        return False # Server terminated, thus end proxy
+                        connect_to_server() # Server terminated, thus reconnect
                     else:
                         client_connection.sendall(response.encode())
                         message = ""
                 except:
-                    return False # Server timed'out or errorer, thus end proxy
+                    return False # Server timed out or errored, thus end proxy
             else:
                 message += data
         else:
             print "Client terminated the connection"
             return True
 
-while server_connected:
+while True:
+    connect_to_server()
     try:
         client_connection, client_address = c.accept()
         print "Received a connection"
