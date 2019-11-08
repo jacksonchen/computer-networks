@@ -126,6 +126,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         throughput_avg = throughput_new # Initialize to first value
                     else:
                         throughput_avg = alpha * throughput_new + (1 - alpha) * throughput_avg
+                    print "Throughput", throughput_avg, throughput_new
 
                     # Send the response back to the client
                     client_socket.sendall(response[0])
