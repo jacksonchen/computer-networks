@@ -89,7 +89,6 @@ def handle_from_client(client_connection):
 
                     if response[1] == False: # Server terminated, thus reconnect
                         connect_to_server()
-
                 except:
                     return False # Server timed out or errored, thus end proxy
             else:
@@ -107,7 +106,7 @@ while True:
             keep_alive = handle_from_client(client_connection)
             if (not keep_alive):
                 client_connection.close()
-                break
+                # break
         finally:
             client_connection.close()
     except KeyboardInterrupt:
