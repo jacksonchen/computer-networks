@@ -1,6 +1,7 @@
 #!/usr/bin/env python2.7
 import sys
 import socket
+import re
 
 DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
 
@@ -27,22 +28,29 @@ server_connected = True
 def send_to_server(client_message):
     client_first_get = client_message.split('\n')[0]
     get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
-    print "get_reqest", get_request
     s.sendall(get_request.encode())
 
     message = ""
+    expected_length = -1
     while True:
         data = s.recv(1024).decode()
         print "Receiving data from server"
         print data
 
         if data:
-            if DELIMIT_CHAR in data:
-                print data.split(DELIMIT_CHAR)
-                message += data.split(DELIMIT_CHAR)[0]
-                response = message + DELIMIT_CHAR # Add the newline character for formatting
-                return response
+            if expected_length == -1 and DELIMIT_CHAR in data: # To differentiate the header from the body
+                header = data.split(DELIMIT_CHAR)[0]
+                result = re.match(/Content-Length: (\d+)/, header)
+
+                # Add header to the message
+                message += data
+                body_length = len(data) - len(data.split(DELIMIT_CHAR)[0]) - len(DELIMIT_CHAR)
+                expected_length = result.groups()[0] - body_length
+            elif expected_length == 0: # Using Content-Length to find the end of message
+                print "===== message\n", message
+                return message
             else:
+                expected_length = max(expected_length - len(data), 0)
                 message += data
         else:
             print "Server terminated the connection"
