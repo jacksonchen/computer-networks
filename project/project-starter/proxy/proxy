@@ -32,7 +32,13 @@ def parse_manifest(server_socket, message):
     # Cut out the first <?xml line
     manifest_body = "\n".join(manifest_body.split("\n")[1:])
 
-    print manifest_body
+    bitrate_array = manifest_body.split("<media")
+    bitrate_dict = {}
+    for bitrate_element in bitrate_array:
+        result = re.search("url=\"(.+)\"\n.+bitrate=\"(.+)\"", bitrate_element)
+        bitrate_dict.add(int(result.groups()[1]), result.groups()[0])
+
+    print bitrate_dict
 
 # Logic that handles sending the client message to the server
 # Returns the response from the server, whether or not the server connection is closed,
