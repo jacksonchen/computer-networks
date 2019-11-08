@@ -30,7 +30,7 @@ def parse_manifest(server_socket, message):
     manifest_body = manifest_response[0][header_length:]
 
     # Cut out the first <?xml line
-    manifest_body = manifest_body[1:]
+    manifest_body = "\n".join(manifest_body.split("\n")[1:])
 
     print manifest_body
 
