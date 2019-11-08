@@ -45,7 +45,7 @@ def send_to_server(client_message):
                 # Add header to the message
                 message += data
                 body_length = len(data) - len(data.split(DELIMIT_CHAR)[0]) - len(DELIMIT_CHAR)
-                expected_length = result.groups()[0] - body_length
+                expected_length = int(result.groups()[0]) - body_length
             elif expected_length == 0: # Using Content-Length to find the end of message
                 print "===== message\n", message
                 return message
@@ -54,7 +54,7 @@ def send_to_server(client_message):
                 message += data
         else:
             print "Server terminated the connection"
-            return None
+            return message
 
 # Logic that handles accepting a client connection
 # Returns whether or not the proxy should be kept alive or not
