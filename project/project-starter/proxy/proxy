@@ -22,15 +22,15 @@ c.listen(1)
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 s.bind((proxy_ip, SERVER_BIND_PORT))
 s.connect((server_ip, 8080))
-SERVER_BIND_PORT += 1
 
 # Creating a method to be called later
-def connect_to_server():
+def reset_server_connection():
+    global s
+
     s.close()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((proxy_ip, SERVER_BIND_PORT))
     s.connect((server_ip, 8080))
-    SERVER_BIND_PORT += 1
 
 # Logic that handles sending the client message to the server
 # Returns the response from the server
@@ -92,7 +92,7 @@ def handle_from_client(client_connection):
                     message = ""
 
                     if response[1] == False: # Server terminated, thus reconnect
-                        connect_to_server()
+                        reset_server_connection(s)
                 except Exception as e:
                     print "Exception!", e
                     return False # Server timed out or errored, thus end proxy
