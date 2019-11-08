@@ -119,7 +119,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         if calculated_rate == 0:
                             calculated_rate = min(bitrates)
 
-                        message = result.groups()[0] + "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[1] + result.groups()[2] + message_remaining
+                        message = result.groups()[0] + "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[0] + result.groups()[2] + message_remaining
                         print "New calculated rate: ", rate
 
                     response = send_to_server(server_socket, message)
