@@ -23,7 +23,12 @@ def connect_to_server(proxy_ip, server_ip,):
 
 def parse_manifest(server_socket, message):
     manifest_response = send_to_server(server_socket, message)
+    body_length = manifest_response[2]
+    header_length = len(manifest_response[0]) - body_length
+    manifest_body = manifest_response[0][header_length:]
     print manifest_response
+    print "======="
+    print manifest_body
 
 # Logic that handles sending the client message to the server
 # Returns the response from the server, whether or not the server connection is closed,
