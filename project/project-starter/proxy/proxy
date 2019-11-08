@@ -21,6 +21,7 @@ def connect_to_server(proxy_ip, server_ip,):
     SERVER_BIND_PORT += 1
     return server_socket
 
+# Returns a dictionary mapping the bitrates to their URL's
 def get_bitrates(server_socket, message):
     manifest_response = send_to_server(server_socket, message)
 
@@ -34,16 +35,12 @@ def get_bitrates(server_socket, message):
 
     bitrate_array = manifest_body.split("<media")
     bitrate_dict = {}
-    print "About to hit bitrate array"
     for bitrate_element in bitrate_array:
         result = re.search("url=\"(.+)\"\n.+bitrate=\"(.+)\"", bitrate_element)
-        # print bitrate_element
-        print "======="
         if result != None:
-            print result.groups()
             bitrate_dict[int(result.groups()[1])] = result.groups()[0]
 
-    print bitrate_dict
+    return bitrate_dict
 
 # Logic that handles sending the client message to the server
 # Returns the response from the server, whether or not the server connection is closed,
@@ -51,11 +48,9 @@ def get_bitrates(server_socket, message):
 def send_to_server(server_socket, client_message):
     client_first_get = client_message.split('\n')[0]
     get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
-    print "get_request: ", get_request
+    # print "get_request: ", get_request
     server_socket.sendall(get_request)
 
-    # message = ""
-    # expected_length = -1
     while True:
         data = server_socket.recv(BUFFER_SIZE)
 
@@ -64,30 +59,10 @@ def send_to_server(server_socket, client_message):
             data += ready_server_socket.recv(BUFFER_SIZE)
 
         print "Receiving data from server"
-        # print data
 
         if data:
             result = re.search("Content-Length: (\d+)", data.split(DELIMIT_CHAR)[0])
             return [data + DELIMIT_CHAR, True, int(result.groups()[0])]
-            # if expected_length == -1 and DELIMIT_CHAR in data: # To differentiate the header from the body
-            #     header = data.split(DELIMIT_CHAR)[0]
-
-            #
-            #     # Add header to the message
-            #     message += data
-            #     body_length = len(data) - len(data.split(DELIMIT_CHAR)[0]) - len(DELIMIT_CHAR)
-            #     expected_length = int(result.groups()[0]) - body_length
-            #     print "expected_length: ", expected_length
-            # else: # Handling the body
-            #     expected_length = max(expected_length - len(data), 0)
-            #     print "expected_length: ", expected_length
-            #     message += data
-            #
-            #     # Using Content-Length to find the end of message
-            #     if expected_length == 0:
-            #         print "RETURNING MESSAGE"
-            #         # print message
-            #         return [message + DELIMIT_CHAR, True]
         else:
             print "Server terminated the connection"
             return [data + DELIMIT_CHAR, False, 0]
@@ -97,7 +72,10 @@ def send_to_server(server_socket, client_message):
 def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip, server_ip):
     try:
         server_socket = connect_to_server(proxy_ip, server_ip)
-        throughput_avg = -1 # Scope the variable to be method accessible
+
+        # Scope the following variables to be accessible across the entire method
+        throughput_avg = -1
+        bitrate_map = {}
 
         while True:
             data = client_socket.recv(BUFFER_SIZE)
@@ -119,9 +97,11 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                     # Change manifest
                     if result.groups()[1] == "/vod/big_buck_bunny.f4m":
                         print "Changing the manifest"
-                        get_bitrates(server_socket, message)
+                        bitrate_map = get_bitrates(server_socket, message)
                         message_remaining = "\n".join(message[1:])
                         message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
+                    elif result.groups()[1].startswith("/vod"):
+                        print result.groups()[1]
 
                     response = send_to_server(server_socket, message)
 
