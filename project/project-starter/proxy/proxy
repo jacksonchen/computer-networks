@@ -41,7 +41,7 @@ def send_to_server(client_message):
     while True:
         data = s.recv(1024).decode()
         print "Receiving data from server"
-        print data
+        # print data
 
         if data:
             if expected_length == -1 and DELIMIT_CHAR in data: # To differentiate the header from the body
@@ -59,6 +59,7 @@ def send_to_server(client_message):
                 # Using Content-Length to find the end of message
                 if expected_length == 0:
                     print "RETURNING MESSAGE"
+                    print message
                     return [message + DELIMIT_CHAR, True]
         else:
             print "Server terminated the connection"
