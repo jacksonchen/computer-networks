@@ -40,7 +40,7 @@ def send_to_server(client_message):
         if data:
             if expected_length == -1 and DELIMIT_CHAR in data: # To differentiate the header from the body
                 header = data.split(DELIMIT_CHAR)[0]
-                result = re.match("Content-Length: (\d+)", header)
+                result = re.search("Content-Length: (\d+)", header)
 
                 # Add header to the message
                 message += data
