@@ -37,10 +37,11 @@ def get_bitrates(server_socket, message):
     print "About to hit bitrate array"
     for bitrate_element in bitrate_array:
         result = re.search("url=\"(.+)\"\n.+bitrate=\"(.+)\"", bitrate_element)
-        print bitrate_element
+        # print bitrate_element
         print "======="
-        print result.groups()
-        bitrate_dict.add(int(result.groups()[1]), result.groups()[0])
+        if result != None:
+            print result.groups()
+            bitrate_dict.add(int(result.groups()[1]), result.groups()[0])
 
     print bitrate_dict
 
