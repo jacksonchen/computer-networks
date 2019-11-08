@@ -67,32 +67,35 @@ def send_to_server(server_socket, client_message):
 def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip, server_ip):
     server_socket = connect_to_server(proxy_ip, server_ip)
     message = ""
-    while True:
-        data = client_socket.recv(BUFFER_SIZE)
+    try:
+        while True:
+            data = client_socket.recv(BUFFER_SIZE)
 
-        while ready_client_socket in select.select([client_socket], [], [])[0]:
-            data += ready_client_socket.recv(BUFFER_SIZE)
+            while ready_client_socket in select.select([client_socket], [], [])[0]:
+                data += ready_client_socket.recv(BUFFER_SIZE)
 
-        print "Received data from client"
-        # print data
+            print "Received data from client"
+            # print data
 
-        if data:
-            message += data.split(DELIMIT_CHAR)[0]
-            server_message = message + DELIMIT_CHAR # Add the newline character for formatting
+            if data:
+                message += data.split(DELIMIT_CHAR)[0]
+                server_message = message + DELIMIT_CHAR # Add the newline character for formatting
 
-            try:
-                response = send_to_server(server_socket, server_message)
-                client_socket.sendall(response[0])
-                message = ""
+                try:
+                    response = send_to_server(server_socket, server_message)
+                    client_socket.sendall(response[0])
+                    message = ""
 
-                if response[1] == False: # Server terminated, thus reconnect
-                    connect_to_server(proxy_ip, server_ip)
-            except Exception as e:
-                print "Exception!", e
-                return False # Server timed out or errored, thus end proxy
-        else:
-            print "Client terminated the connection"
-            return False
+                    if response[1] == False: # Server terminated, thus reconnect
+                        connect_to_server(proxy_ip, server_ip)
+                except Exception as e:
+                    print "Exception!", e
+                    return False # Server timed out or errored, thus end proxy
+            else:
+                print "Client terminated the connection"
+                return False
+    except Exception, e:
+        print "Exception inside handle_from_client: ", e
 
 ### Start of execution
 
