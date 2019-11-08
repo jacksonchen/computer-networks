@@ -2,7 +2,7 @@
 import sys
 import socket
 
-DELIMIT_CHAR = "\n\n" # Character delimiting end of message
+DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
 
 # Input arguments
 log_path = sys.argv[1]
@@ -37,7 +37,8 @@ def send_to_server(client_message):
         print data
 
         if data:
-            if "\n\n" in data or "\r\n\r\n" in data:
+            if DELIMIT_CHAR in data:
+                print data.split(DELIMIT_CHAR)
                 message += data.split(DELIMIT_CHAR)[0]
                 response = message + DELIMIT_CHAR # Add the newline character for formatting
                 return response
@@ -57,7 +58,7 @@ def handle_from_client(client_connection):
         print data
 
         if data:
-            if "\n\n" in data or "\r\n\r\n" in data:
+            if DELIMIT_CHAR in data:
                 message += data.split(DELIMIT_CHAR)[0]
                 server_message = message + DELIMIT_CHAR # Add the newline character for formatting
 
