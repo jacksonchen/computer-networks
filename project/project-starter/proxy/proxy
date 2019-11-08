@@ -10,11 +10,13 @@ SERVER_BIND_PORT = 4999
 BUFFER_SIZE = 1024
 
 # Creating a method to be called later
-def connect_to_server(proxy_ip, server_ip):
+def connect_to_server(proxy_ip, server_ip,):
+    global SERVER_BIND_PORT
     # server_socket.close()
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((proxy_ip, SERVER_BIND_PORT))
     server_socket.connect((server_ip, 8080))
+    SERVER_BIND_PORT += 1
     return server_socket
 
 # Logic that handles sending the client message to the server
