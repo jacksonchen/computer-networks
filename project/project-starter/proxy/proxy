@@ -27,7 +27,7 @@ server_connected = True
 # Returns the response from the server
 def send_to_server(client_message):
     client_first_get = client_message.split('\n')[0]
-    get_request = client_first_get o+ "\nHost: " + server_ip + "\n\n"
+    get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
     print "get_request: ", get_request
     s.sendall(get_request.encode())
 
