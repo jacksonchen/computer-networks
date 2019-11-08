@@ -48,7 +48,7 @@ def get_bitrates(server_socket, message):
 def send_to_server(server_socket, client_message):
     client_first_get = client_message.split('\n')[0]
     get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
-    # print "get_request: ", get_request
+    print "get_request: ", client_first_get
     server_socket.sendall(get_request)
 
     while True:
