@@ -92,7 +92,6 @@ def handle_from_client(client_connection):
             return True
 
 while True:
-    connect_to_server()
     try:
         client_connection, client_address = c.accept()
         print "Received a connection"
