@@ -26,6 +26,7 @@ SERVER_BIND_PORT += 1
 
 # Creating a method to be called later
 def connect_to_server():
+    s.close()
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((proxy_ip, SERVER_BIND_PORT))
     s.connect((server_ip, 8080))
