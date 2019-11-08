@@ -27,7 +27,7 @@ def send_to_server(server_socket, client_message):
     print "get_request: ", get_request
     server_socket.sendall(get_request)
 
-    message = ""
+    # message = ""
     # expected_length = -1
     while True:
         data = server_socket.recv(BUFFER_SIZE)
@@ -40,7 +40,7 @@ def send_to_server(server_socket, client_message):
         # print data
 
         if data:
-            return [message + DELIMIT_CHAR, True]
+            return [data + DELIMIT_CHAR, True]
             # if expected_length == -1 and DELIMIT_CHAR in data: # To differentiate the header from the body
             #     header = data.split(DELIMIT_CHAR)[0]
             #     result = re.search("Content-Length: (\d+)", header)
