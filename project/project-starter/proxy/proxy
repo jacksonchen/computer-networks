@@ -66,9 +66,9 @@ def send_to_server(server_socket, client_message):
 # Logic that handles accepting a client connection
 # Returns whether or not the proxy should be kept alive or not
 def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip, server_ip):
-    server_socket = connect_to_server(proxy_ip, server_ip)
-    message = ""
     try:
+        server_socket = connect_to_server(proxy_ip, server_ip)
+        message = ""
         while True:
             data = client_socket.recv(BUFFER_SIZE)
 
