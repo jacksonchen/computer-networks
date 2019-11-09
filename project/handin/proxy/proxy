@@ -1,80 +1,229 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import sys
 import socket
+import re
+import thread
+import select
+import time
 
-listen_port = int(sys.argv[1])
-proxy_ip = sys.argv[2]
-server_ip = sys.argv[3]
+# GLOBAL VARIABLES
+DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
+SERVER_BIND_PORT = 4999
+BUFFER_SIZE = 16
+BITRATE_MAP = {} # Set globally so multiple clients can share the same manifest file data
+FILE_LOCKS = {} # Write locks for each respective log file
 
-# Proxy to handle client (proxy acts as server)
+# Established a connection to the web server
+# Input: Fake proxy IP, IP of the web server
+# Output: Socket that communciates with the web server
+def connect_to_server(proxy_ip, server_ip):
+    global SERVER_BIND_PORT
+
+    # Establish connection from proxy to web server
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket.bind((proxy_ip, SERVER_BIND_PORT))
+    server_socket.connect((server_ip, 8080))
+
+    # Increment the port bound to the proxy to avoid using the same port
+    SERVER_BIND_PORT += 1
+
+    return server_socket
+
+# Parses the big_buck_bunny.f4m manifest file
+# Returns a dictionary mapping the bitrates to their URL's from the manifest file
+def get_bitrates(server_socket, message):
+    global BITRATE_MAP
+
+    # Ensures the logic in this function should only be called once in total,
+    # as various clients can share the same bitrate mapping data
+    if len(BITRATE_MAP) != 0:
+        return
+
+    manifest_response = send_to_server(server_socket, message)
+
+    # Cut out the HTTP header from the manifest
+    body_length = manifest_response[2]
+    header_length = len(manifest_response[0]) - body_length - len(DELIMIT_CHAR)
+    manifest_body = manifest_response[0][header_length:]
+
+    # Cut out the first <?xml line
+    manifest_body = "\n".join(manifest_body.split("\n")[1:])
+
+    # Splits the different sections of the XML file and searches for URL and Bitrate info
+    bitrate_array = manifest_body.split("<media")
+    bitrate_dict = {}
+    for bitrate_element in bitrate_array:
+        result = re.search("url=\"(.+)\"\n.+bitrate=\"(.+)\"", bitrate_element)
+        if result != None:
+            bitrate_dict[int(result.groups()[1])] = result.groups()[0]
+
+    BITRATE_MAP = bitrate_dict
+
+# Logic that handles sending the client message to the server
+# Returns three things:
+#   (1) the response from the server
+#   (2) whether or not the server connection is closed (i.e need to re-establish connection)
+#   (3) the length of the chunk (via Content-Length)
+def send_to_server(server_socket, client_message):
+    # Send message to server
+    get_request = client_message + DELIMIT_CHAR
+    server_socket.sendall(get_request)
+    print client_message
+
+    while True:
+        # Read in the server socket
+        data = ""
+        while len(select.select([server_socket], [], [], 1)[0]) > 0:
+            ready_server_socket = select.select([server_socket], [], [], 1)[0][0]
+            data += ready_server_socket.recv(BUFFER_SIZE)
+
+        if data:
+            # Get the content length of the message
+            result = re.search("Content-Length: (\d+)", data.split(DELIMIT_CHAR)[0])
+
+            return [data + DELIMIT_CHAR, True, int(result.groups()[0])]
+        else:
+            print "Server terminated the connection"
+            return [data + DELIMIT_CHAR, False, 0]
+
+# All of the logic that handles a client connection
+# Return statements indicate that this client thread should be shut down
+def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip, server_ip):
+    try:
+        server_socket = connect_to_server(proxy_ip, server_ip)
+
+        # Establish a file lock for the log file and store it globally to be shared
+        # for other clients that may use the same log file
+        if log_path not in FILE_LOCKS:
+            FILE_LOCKS[log_path] = thread.allocate_lock()
+
+        with open(log_path, "a") as f:
+            # This throughput variable will be used across multiple messages
+            throughput_avg = -1
+
+            while True:
+                # Read data from client socket
+                data = ""
+                while len(select.select([client_socket], [], [], 1)[0]) > 0:
+                    ready_client_socket = select.select([client_socket], [], [], 1)[0][0]
+                    data += ready_client_socket.recv(BUFFER_SIZE)
+
+                start_time = time.time()
+                if data:
+                    # Make sure proxy only reads the message up to the delimiter character
+                    split_message = data.split(DELIMIT_CHAR)[0].split('\n')
+
+                    # Adds the GET statement and Host information to the message
+                    result = re.search("^(GET )(.+)( HTTP/\d\.\d)", split_message[0])
+                    message = result.groups()[0] + result.groups()[1] + result.groups()[2] + "\n" + split_message[1]
+
+                    # Initialize response for later use
+                    response = [None, None, None]
+
+                    try:
+                        # If user queries manifest, change manifest query and get bitrate info
+                        if result.groups()[1] == "/vod/big_buck_bunny.f4m":
+                            get_bitrates(server_socket, message)
+                            message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + "\n" + split_message[1]
+                            response = send_to_server(server_socket, message)
+
+                        # If user queries video, do throughput calculation and optimization
+                        elif len(BITRATE_MAP) > 0 and result.groups()[1].startswith("/vod"):
+                            bitrate_search = re.search("/vod/\d+(Seg.+)", result.groups()[1])
+                            chunk_name = None # Placed out here for logging purposes
+                            bitrates = BITRATE_MAP.keys()
+                            calculated_rate = max(bitrates) # Default
+
+                            if throughput_avg != -1:
+                                max_bitrate = float(throughput_avg) / 1.5
+                                if max_bitrate < calculated_rate: # If the default is too high
+                                    calculated_rate = min(bitrates)
+
+                                # Now optimize calculated_rate to be the closest to the max_bitrate
+                                for bitrate in bitrates:
+                                    if bitrate < max_bitrate and max_bitrate - bitrate < max_bitrate - calculated_rate:
+                                        calculated_rate = bitrate
+
+                                # Insert the optimized chunk bitrate into the message
+                                chunk_name = "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[0]
+                                message = result.groups()[0] + chunk_name + result.groups()[2] + "\n" + split_message[1]
+                            else:
+                                chunk_name = result.groups()[1]
+
+                            # Receive response from the server
+                            response = send_to_server(server_socket, message)
+
+                            # Throughput Calculation
+                            end_time = time.time()
+                            duration = float(end_time - start_time)
+
+                            chunk_size = float(response[2]) * 8 / 1000 # bytes -> kilobits
+                            throughput_new = chunk_size / duration
+
+                            if throughput_avg == -1:
+                                throughput_avg = throughput_new # Initialize to first value
+                            else:
+                                throughput_avg = alpha * throughput_new + (1 - alpha) * throughput_avg
+
+                            log = str(int(end_time)) + " " + str(duration) + " " + str(int(throughput_new)) + " " + str(int(throughput_avg)) + " " + str(calculated_rate) + " " + str(server_ip) + " " + chunk_name + "\n"
+
+                            # Write to the output file and initiate the write lock
+                            with FILE_LOCKS[log_path]:
+                                f.write(log)
+                                f.flush()
+
+                        # Any other request the user sents will just be delivered to the web server
+                        else:
+                            response = send_to_server(server_socket, message)
+
+                        # Send the response back to the client
+                        client_socket.sendall(response[0])
+
+                        # Check if server terminated, if so reconnect
+                        if response[1] == False:
+                            server_socket = connect_to_server(proxy_ip, server_ip)
+                    except Exception, e:
+                        print "handle_from_client exception:", e
+                        client_socket.close()
+                        server_socket.close()
+                        f.close()
+                        return
+                else:
+                    print "Client terminated the connection"
+                    client_socket.close()
+                    server_socket.close()
+                    f.close()
+                    return
+    except Exception, e:
+        print "Exception inside handle_from_client: ", e
+        client_socket.close()
+        return
+
+### Start of execution
+# Input arguments
+log_path = sys.argv[1]
+alpha = float(sys.argv[2])
+listen_port = int(sys.argv[3])
+proxy_ip = sys.argv[4] # Fake IP
+server_ip = sys.argv[5]
+
+# Proxy listen socket to handle client browsers (proxy acts as server)
 c = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 c.bind(('', listen_port))
 c.listen(1)
 
-# Proxy to direct to server (proxy acts as client)
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.bind((proxy_ip, 4999))
-s.connect((server_ip, 8080))
-server_connected = True
-
-# Logic that handles sending the client message to the server
-# Returns the response from the server
-def send_to_server(client_message):
-    s.sendall(client_message.encode())
-
-    message = ""
-    while True:
-        data = s.recv(16).decode()
-
-        if data:
-            if '\n' in data:
-                message += data.split('\n')[0]
-                response = message + '\n' # Add the newline character for formatting
-                return response
-            else:
-                message += data
-        else:
-            print "Server terminated the connection"
-            return None
-
-# Logic that handles accepting a client connection
-# Returns whether or not the proxy should be kept alive or not
-def handle_from_client(client_connection):
-    message = ""
-    while True:
-        data = client_connection.recv(16).decode()
-
-        if data:
-            if '\n' in data:
-                message += data.split('\n')[0]
-                server_message = message + '\n' # Add the newline character for formatting
-
-                try:
-                    response = send_to_server(server_message)
-                    if response == None:
-                        return False # Server terminated, thus end proxy
-                    else:
-                        client_connection.sendall(response.encode())
-                        message = ""
-                except:
-                    return False # Server timed'out or errorer, thus end proxy
-            else:
-                message += data
-        else:
-            print "Client terminated the connection"
-            return True
-
-while server_connected:
-    client_connection, client_address = c.accept()
-    print "Received a connection"
-
+# Constantly check for new client connection requests
+while True:
     try:
-        keep_alive = handle_from_client(client_connection)
-        if (not keep_alive):
-            client_connection.close()
-            break
-    finally:
-        client_connection.close()
+        client_socket, client_address = c.accept()
+        print "Received a connection"
 
-s.close()
-c.close()
+        # Start a new thread to handle the client <-> server connection
+        thread.start_new_thread(handle_from_client, (log_path, alpha, client_socket, client_address, proxy_ip, server_ip))
+    except KeyboardInterrupt:
+        c.close()
+        break
+    except Exception, e:
+        c.close()
+        print "Exception at proxy client level: ", e
+        break
