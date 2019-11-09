@@ -57,7 +57,7 @@ def send_to_server(server_socket, client_message):
     # print "%%%%% Request to server:"
     # print get_request
     print client_message
-    server_socket.sendall(get_request)
+    server_socket.sendall(client_message)
 
     while True:
         data = ""
@@ -102,14 +102,14 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                     # print data.split(DELIMIT  _CHAR)[0]
                     split_message = data.split(DELIMIT_CHAR)[0].split('\n')
                     result = re.search("^(GET )(.+)( HTTP/\d\.\d)", split_message[0])
-                    message = result.groups()[0] + result.groups()[1] + result.groups()[2]
+                    message = result.groups()[0] + result.groups()[1] + result.groups()[2] + "\n" + split_message[1]
                     response = [None, None, None]
 
                     try:
                         # Change manifest
                         if result.groups()[1] == "/vod/big_buck_bunny.f4m":
                             get_bitrates(server_socket, message)
-                            message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2]
+                            message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + "\n" + split_message[1]
                             response = send_to_server(server_socket, message)
                         elif len(BITRATE_MAP) > 0 and result.groups()[1].startswith("/vod"):
                             bitrate_search = re.search("/vod/\d+(Seg.+)", result.groups()[1])
@@ -128,7 +128,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                                         calculated_rate = bitrate
 
                                 chunk_name = "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[0]
-                                message = result.groups()[0] + chunk_name + result.groups()[2]
+                                message = result.groups()[0] + chunk_name + result.groups()[2] + "\n" + split_message[1]
                             else:
                                 # For logging
                                 chunk_name = result.groups()[1]
