@@ -146,7 +146,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                             else:
                                 throughput_avg = alpha * throughput_new + (1 - alpha) * throughput_avg
 
-                            log = str(end_time) + " " + str(duration) + " " + str(throughput_new) + " " + str(throughput_avg) + " " + str(calculated_rate) + " " + str(server_ip) + " " + chunk_name + "\n"
+                            log = str(int(end_time)) + " " + str(duration) + " " + str(int(throughput_new)) + " " + str(int(throughput_avg)) + " " + str(calculated_rate) + " " + str(server_ip) + " " + chunk_name + "\n"
                             f.write(log)
                             f.flush()
                         else:
