@@ -95,7 +95,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
         # Establish a file lock for the log file and store it globally to be shared
         # for other clients that may use the same log file
         if log_path not in FILE_LOCKS:
-            FILE_LOCKS[log_path] = read.allocate_lock()
+            FILE_LOCKS[log_path] = thread.allocate_lock()
 
         with open(log_path, "a") as f:
             # This throughput variable will be used across multiple messages
