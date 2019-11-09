@@ -79,6 +79,7 @@ def send_to_server(server_socket, client_message):
 def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip, server_ip):
     try:
         server_socket = connect_to_server(proxy_ip, server_ip)
+        f = open(log_path, "a")
 
         # Scope the following variables to be accessible across the entire method
         throughput_avg = -1
@@ -95,8 +96,8 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
             if data:
                 # Make sure proxy cuts off the message at delimiter character
                 message = data.split(DELIMIT_CHAR)[0] + DELIMIT_CHAR
-
                 result = re.search("^(GET )(.+)( HTTP.+)", message.split('\n')[0])
+                response = [None, None, None]
 
                 try:
                     # Change manifest
@@ -105,6 +106,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         get_bitrates(server_socket, message)
                         message_remaining = "\n".join(message[1:])
                         message = result.groups()[0] + "/vod/big_buck_bunny_nolist.f4m" + result.groups()[2] + message_remaining
+                        response = send_to_server(server_socket, message)
                     elif throughput_avg != -1 and len(BITRATE_MAP) > 0 and result.groups()[1].startswith("/vod"):
                         bitrate_search = re.search("/vod/\d+(Seg.+)", result.groups()[1])
                         message_remaining = "\n".join(message[1:])
@@ -118,21 +120,26 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         if calculated_rate == 0:
                             calculated_rate = min(bitrates)
 
-                        message = result.groups()[0] + "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[0] + result.groups()[2] + message_remaining
+                        chunk_name = "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[0]
+                        message = result.groups()[0] + chunk_name + result.groups()[2] + message_remaining
+                        response = send_to_server(server_socket, message)
+
+                        # Throughput Calculation
+                        end_time = time.time()
+                        duration = float(end_time - start_time)
+
+                        chunk_size = float(response[2]) * 8 / 1000 # bytes -> kilobits
+                        throughput_new = chunk_size / duration
+
+                        if throughput_avg == -1:
+                            throughput_avg = throughput_new # Initialize to first value
+                        else:
+                            throughput_avg = alpha * throughput_new + (1 - alpha) * throughput_avg
+
+                        f.write(time.time() + " " + duration + " " + throughput_new + " " + throughput_avg + " " + calculated_rate + " " + server_ip + " " + chunk_name)
                         print "New calculated rate: ", calculated_rate
-
-                    response = send_to_server(server_socket, message)
-
-                    # Throughput Calculation
-                    end_time = time.time()
-                    chunk_size = float(response[2]) * 8 / 1000 # bytes -> kilobits
-                    throughput_new = chunk_size / float(end_time - start_time)
-
-                    if throughput_avg == -1:
-                        throughput_avg = throughput_new # Initialize to first value
                     else:
-                        throughput_avg = alpha * throughput_new + (1 - alpha) * throughput_avg
-                    print "Throughput", throughput_avg, throughput_new
+                        response = send_to_server(server_socket, message)
 
                     # Send the response back to the client
                     client_socket.sendall(response[0])
@@ -145,15 +152,18 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                     print traceback.format_exc()
                     client_socket.close()
                     server_socket.close()
+                    f.close()
                     return
             else:
                 print "Client terminated the connection"
                 client_socket.close()
                 server_socket.close()
+                f.close()
                 return
     except Exception, e:
         print "Exception inside handle_from_client: ", e
         client_socket.close()
+        f.close()
         return
 
 ### Start of execution
@@ -177,12 +187,6 @@ while True:
         client_socket, client_address = c.accept()
         print "Received a connection"
         thread.start_new_thread(handle_from_client, (log_path, alpha, client_socket, client_address, proxy_ip, server_ip))
-
-        # try:
-        #     keep_alive = handle_from_client(client_socket)
-        #     client_connection.close()
-        # finally:
-        #     client_connection.close()
     except KeyboardInterrupt:
         c.close()
         break
