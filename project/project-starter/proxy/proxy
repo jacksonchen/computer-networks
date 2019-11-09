@@ -108,16 +108,17 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                             bitrate_search = re.search("/vod/\d+(Seg.+)", result.groups()[1])
                             chunk_name = None
                             bitrates = BITRATE_MAP.keys()
-                            calculated_rate = max(bitrates)
+                            calculated_rate = max(bitrates) # Default
 
                             if throughput_avg != -1:
                                 max_bitrate = float(throughput_avg) / 1.5
+                                if max_bitrate < calculated_rate: # If the default is too high
+                                    calculated_rate = min(bitrates)
 
+                                # Now optimize calculated_rate to be the closest to the max_bitrate
                                 for bitrate in bitrates:
                                     if bitrate < max_bitrate and max_bitrate - bitrate < max_bitrate - calculated_rate:
                                         calculated_rate = bitrate
-                                if calculated_rate == 0:
-                                    calculated_rate = min(bitrates)
 
                                 chunk_name = "/vod/" + BITRATE_MAP[calculated_rate] + bitrate_search.groups()[0]
                                 message_remaining = "\n".join(message[1:])
