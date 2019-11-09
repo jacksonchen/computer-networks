@@ -52,11 +52,12 @@ def get_bitrates(server_socket, message):
 # Returns the response from the server, whether or not the server connection is closed,
 # and the length of the chunk (via Content-Length)
 def send_to_server(server_socket, client_message):
-    print client_message.split('\n')
-    print "=========="
+    print client_message
     client_first_get = client_message.split('\n')[0]
     get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
     print client_first_get
+    print get_request
+    print "=========="
     server_socket.sendall(get_request)
 
     while True:
