@@ -54,8 +54,9 @@ def get_bitrates(server_socket, message):
 # and the length of the chunk (via Content-Length)
 def send_to_server(server_socket, client_message):
     get_request = client_message + "\nHost: localhost:" + str(SERVER_BIND_PORT - 1) + DELIMIT_CHAR
-    print "%%%%% Request to server:"
-    print get_request
+    # print "%%%%% Request to server:"
+    # print get_request
+    print client_message
     server_socket.sendall(get_request)
 
     while True:
@@ -97,8 +98,8 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
 
                 if data:
                     # Make sure proxy cuts off the message at delimiter character
-                    print "$$$$$ incoming from client:"
-                    print data.split(DELIMIT_CHAR)[0]
+                    # print "$$$$$ incoming from client:"
+                    # print data.split(DELIMIT_CHAR)[0]
                     split_message = data.split(DELIMIT_CHAR)[0].split('\n')
                     result = re.search("^(GET )(.+)( HTTP/\d\.\d)", split_message[0])
                     message = result.groups()[0] + result.groups()[1] + result.groups()[2]
