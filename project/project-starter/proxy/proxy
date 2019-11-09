@@ -137,7 +137,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                             throughput_avg = alpha * throughput_new + (1 - alpha) * throughput_avg
 
                         f.write(time.time() + " " + duration + " " + throughput_new + " " + throughput_avg + " " + calculated_rate + " " + server_ip + " " + chunk_name)
-                        print "New calculated rate: ", calculated_rate
+                        f.flush()
                     else:
                         response = send_to_server(server_socket, message)
 
