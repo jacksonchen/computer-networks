@@ -166,7 +166,6 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
     except Exception, e:
         print "Exception inside handle_from_client: ", e
         client_socket.close()
-        f.close()
         return
 
 ### Start of execution
