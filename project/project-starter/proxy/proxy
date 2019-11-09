@@ -10,7 +10,7 @@ import traceback
 
 DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
 SERVER_BIND_PORT = 4999
-BUFFER_SIZE = 1024
+BUFFER_SIZE = 16
 BITRATE_MAP = {}
 
 # Creating a method to be called later
@@ -88,19 +88,19 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
             while True:
                 data = ""
                 # data = client_socket.recv(BUFFER_SIZE)
-                # while len(select.select([client_socket], [], [], 1)[0]) > 0:
-                #     ready_client_socket = select.select([client_socket], [], [], 1)[0][0]
-                #     data += ready_client_socket.recv(BUFFER_SIZE)
-                ready = select.select([client_socket], [], [], 3)[0]
-                if len(ready) > 0 and ready[0]:
-                    data += client_socket.recv(BUFFER_SIZE)
+                while len(select.select([client_socket], [], [], 1)[0]) > 0:
+                    ready_client_socket = select.select([client_socket], [], [], 1)[0][0]
+                    data += ready_client_socket.recv(BUFFER_SIZE)
+                # ready = select.select([client_socket], [], [], 3)[0]
+                # if len(ready) > 0 and ready[0]:
+                #     data += client_socket.recv(BUFFER_SIZE)
 
                 start_time = time.time()
 
                 if data:
                     # Make sure proxy cuts off the message at delimiter character
-                    # print "$$$$$ incoming from client:"
-                    # print data.split(DELIMIT  _CHAR)[0]
+                    print "$$$$$ incoming from client:"
+                    print data.split(DELIMIT_CHAR)[0]
                     split_message = data.split(DELIMIT_CHAR)[0].split('\n')
                     result = re.search("^(GET )(.+)( HTTP/\d\.\d)", split_message[0])
                     message = result.groups()[0] + result.groups()[1] + result.groups()[2] + "\n" + split_message[1]
