@@ -6,6 +6,7 @@ import thread
 import select
 import time
 import xml.etree.ElementTree as ET
+import traceback
 
 DELIMIT_CHAR = "\r\n\r\n" # Character delimiting end of message
 SERVER_BIND_PORT = 4999
@@ -89,7 +90,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                 #     ready_client_socket = select.select([client_socket], [], [], 1)[0][0]
                 #     data += ready_client_socket.recv(BUFFER_SIZE)
                 ready = select.select([client_socket], [], [], 3)[0]
-                if ready[0]:
+                if len(ready) > 0 && ready[0]:
                     data += client_socket.recv(BUFFER_SIZE)
 
                 start_time = time.time()
@@ -157,7 +158,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                         if response[1] == False:
                             server_socket = connect_to_server(proxy_ip, server_ip)
                     except Exception, e:
-                        print "handle_from_client exception:", e
+                        print "handle_from_client exception:", traceback.format_exc()
                         client_socket.close()
                         server_socket.close()
                         f.close()
@@ -169,7 +170,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                     f.close()
                     return
     except Exception, e:
-        print "Exception inside handle_from_client: ", e
+        print "Exception inside handle_from_client: ", traceback.format_exc()
         client_socket.close()
         return
 
