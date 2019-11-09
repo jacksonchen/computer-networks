@@ -83,7 +83,8 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
             throughput_avg = -1
 
             while True:
-                data = ""
+                # data = ""
+                data = client_socket.recv(BUFFER_SIZE)
                 while len(select.select([client_socket], [], [], 1)[0]) > 0:
                     ready_client_socket = select.select([client_socket], [], [], 1)[0][0]
                     data += ready_client_socket.recv(BUFFER_SIZE)
