@@ -54,7 +54,7 @@ def get_bitrates(server_socket, message):
 def send_to_server(server_socket, client_message):
     # client_first_get = client_message.split('\n')[0]
     print client_message
-    get_request = client_message + "\nHost: " + server_ip + "\n\n"
+    get_request = client_message + "\nHost: " + server_ip + DELIMIT_CHAR
     # print client_first_get
     print get_request
     # print "=========="
@@ -95,7 +95,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
 
                 if data:
                     # Make sure proxy cuts off the message at delimiter character
-                    message = data.split(DELIMIT_CHAR)[0] + DELIMIT_CHAR
+                    # message = data.split(DELIMIT_CHAR)[0] + DELIMIT_CHAR
                     split_message = message.split('\n')
                     result = re.search("^(GET )(.+)( HTTP/\d\.\d)", split_message[0])
                     response = [None, None, None]
@@ -147,6 +147,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                             f.write(log)
                             f.flush()
                         else:
+                            message = result.groups()[0] + result.groups()[1] + result.groups()[2]
                             response = send_to_server(server_socket, message)
 
                         # Send the response back to the client
