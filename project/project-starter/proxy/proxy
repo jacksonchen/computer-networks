@@ -55,8 +55,8 @@ def send_to_server(server_socket, client_message):
     client_first_get = client_message.split('\n')[0]
     print client_message.split('\n')
     get_request = client_first_get + "\nHost: " + server_ip + "\n\n"
-    print client_first_get
-    # print get_request
+    # print client_first_get
+    print get_request
     # print "=========="
     server_socket.sendall(get_request)
 
@@ -97,7 +97,7 @@ def handle_from_client(log_path, alpha, client_socket, client_address, proxy_ip,
                     # Make sure proxy cuts off the message at delimiter character
                     message = data.split(DELIMIT_CHAR)[0] + DELIMIT_CHAR
                     split_message = message.split('\n')
-                    result = re.search("^(GET )(.+)( HTTP.+)", split_message[0])
+                    result = re.search("^(GET )(.+)( HTTP/\d\.\d)", split_message[0])
                     response = [None, None, None]
 
                     try:
