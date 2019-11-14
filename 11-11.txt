@@ -1,0 +1,32 @@
+IPv6 adoption is very slow
+
+Getting IP Address
+  - ISP is able to sub-allocate blocks to organization customers
+    - Internet uses longest matching IP prefix (i.e most specific route) to determine route
+  - How do individual hosts get IP addresses?
+    - Hard coded by system admin in a file
+    - DHCP (dynamically get address from a server)
+      - New client first broadcasts a request to find a DHCP server (it doesn't
+        know the DHCP server's IP) -> broadcast = send to everyone on the network
+      - DHCP server responds with an IP address that is available for use;
+        the transaction ID is in case if multiple requests come in at the same time,
+        DHCP is able to distinguish each one
+
+Inside IPv4 datagram
+  - Transport protocol is the glue between the transport and network layer
+  - Port number is the glue between network and application layer
+  - Note that every layer needs some bit of information to tell what to send to
+    in the above layer
+
+================
+
+Control plane
+  - Can be done per router, or done by software network-wide (logically centralized)
+
+How are Forwarding Tables maintained?
+  - Routing protocol goal: Determine "good" paths
+    - Policy considerations (lowest cost; not routing traffic through unrelated organizations)
+  - Routing algorithms
+    - Autonomous systems (AS), where you have intra-AS routing (all routers in AS running same
+      AS protocol)
+      - For Intra-AS routing protocols, we will look at OSPF

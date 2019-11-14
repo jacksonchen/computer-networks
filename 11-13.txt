@@ -1,0 +1,26 @@
+BGP
+  - UPDATE will automatically withdraw the old path
+  - When router learns multiple paths to a destination, it depends on whatever
+    policy is configured on the router to choose which path it wants to choose
+    - Once a router learns and chooses a route, it advertises it via iBGP
+      (and doesn't advertise the other route(s))
+  - iBGP sessions exist between any two routers in the same AS, not just
+    your nearest neighbor
+  - NEXT-HOP v1
+    - Because of iBGP, 2a will learn a route to 2c even if it's not directly connected,
+      because a TCP connection will be established
+    - This is why 1A's NEXT-HOP is 1c
+    - Stitching together the NEXT-HOP's creates the forwarding route
+  - NEXT-HOP v2
+    - NEXT-HOP will be the previous border router
+    - 3a's IP address will be in the subnet of AS2 in order to be on the same
+      wavelength for communication
+
+AS Types
+  - Multi-homes: Effectively a stub. In the slide, AS2 may get some traffic from AS1
+    and AS3 and may send stuff to AS1 and AS3, but will not deliver traffic from
+    AS1 to AS3 or vise versa
+
+No Valley
+  - Why? You pay money for both ways but don't benefit
+  - Export policy: To peer/provider only export routes learned from customers or internally
